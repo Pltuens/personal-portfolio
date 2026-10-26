@@ -51,8 +51,12 @@ export default function Home() {
               <span className="h-[5px] w-[5px] animate-pulse bg-accent" />
               portfolio os / v2.6
             </span>
-            <span className="hidden text-muted sm:block">{clock} CST</span>
+            <span className="text-muted">
+              <span className="sm:hidden">{clock.slice(-8)}</span>
+              <span className="hidden sm:inline">{clock} CST</span>
+            </span>
             <span className="flex items-center gap-2 text-muted">
+              <span className="sm:hidden">online</span>
               <span className="hidden sm:inline">system online</span>
               <span className="text-accent">●</span>
             </span>

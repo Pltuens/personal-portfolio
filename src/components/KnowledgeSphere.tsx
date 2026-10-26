@@ -271,7 +271,7 @@ export default function KnowledgeSphere() {
         const tw = ctx.measureText(node.label).width
         const lx = p.x + (right ? r + 7 : -(r + 7))
         const x0 = right ? lx : lx - tw
-        const box = { x0: x0 - 2, y0: p.y - size * 0.95, x1: x0 + tw + 2, y1: p.y + size * 0.95 }
+        const box = { x0: x0 - 5, y0: p.y - size * 1.05, x1: x0 + tw + 5, y1: p.y + size * 1.05 }
 
         if (!on) {
           const clash = placed.some(

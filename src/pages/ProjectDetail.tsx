@@ -21,46 +21,56 @@ export default function ProjectDetail() {
 
   return (
     <article>
-      <header className="border-b border-line pt-10 pb-10 md:pt-14">
-        <div className="container-page">
-          <Link
-            to="/works"
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-ink"
-          >
-            <Arrow className="h-3.5 w-3.5 rotate-180" />
-            全部作品
-          </Link>
+      <header className="relative overflow-hidden border-b border-line pt-10 md:pt-14">
+        <span className="tech-line absolute inset-x-0 top-0" />
+        <span
+          aria-hidden="true"
+          className="watermark pointer-events-none absolute -top-6 right-2 hidden text-[clamp(6rem,13vw,11rem)] md:block"
+        >
+          {project.index}
+        </span>
 
-          <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-8">
-            <div className="md:col-span-8">
-              <div className="flex flex-wrap items-center gap-3">
-                <Label>
-                  {project.index} / {project.category}
-                </Label>
-                <StatusBadge>{project.status}</StatusBadge>
-              </div>
-              <h1 className="display-xl mt-5">{project.title}</h1>
-              <p className="mt-5 max-w-[42ch] font-display text-[clamp(1.15rem,2.2vw,1.5rem)] leading-snug text-ink-soft">
-                {project.subtitle}
-              </p>
-            </div>
-
-            <dl className="self-end border-t border-line md:col-span-4 md:border-t-0 md:border-l md:pl-8">
-              {[
-                ['类型', project.kind],
-                ['职责', project.role],
-                ['交付', project.scope],
-                ['时间', project.period],
-              ].map(([k, v]) => (
-                <div key={k} className="flex gap-4 border-b border-line-soft py-3 last:border-b-0">
-                  <dt className="w-10 shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
-                    {k}
-                  </dt>
-                  <dd className="text-[13px] leading-snug text-ink-soft">{v}</dd>
-                </div>
-              ))}
-            </dl>
+        <div className="container-page relative">
+          <div className="flex items-center justify-between gap-4">
+            <Link
+              to="/works"
+              className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-accent"
+            >
+              <Arrow className="h-3.5 w-3.5 rotate-180" />
+              全部作品
+            </Link>
+            <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+              {project.index} / 03 · {project.period}
+            </span>
           </div>
+
+          <div className="mt-8 max-w-4xl">
+            <div className="flex flex-wrap items-center gap-3">
+              <Label>{project.category}</Label>
+              <StatusBadge>{project.status}</StatusBadge>
+            </div>
+            <h1 className="display-xl mt-5">{project.title}</h1>
+            <p className="mt-5 max-w-[44ch] font-display text-[clamp(1.15rem,2.2vw,1.5rem)] leading-snug text-ink-soft">
+              {project.subtitle}
+            </p>
+          </div>
+
+          {/* 档案数据带 */}
+          <dl className="mt-10 grid grid-cols-2 gap-px border-y border-line bg-line md:grid-cols-4">
+            {[
+              ['类型', project.kind],
+              ['职责', project.role],
+              ['交付', project.scope],
+              ['时间', project.period],
+            ].map(([k, v]) => (
+              <div key={k} className="bg-paper px-4 py-4">
+                <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+                  {k}
+                </dt>
+                <dd className="mt-1.5 text-[13px] leading-snug text-ink">{v}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </header>
 

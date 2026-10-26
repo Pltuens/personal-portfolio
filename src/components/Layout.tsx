@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { contact, profile } from '../data/profile'
 import { Cursor, ScrollProgress } from './Chrome'
+import Starfield from './Starfield'
 import { Arrow, Label } from './ui'
 
 const NAV = [
@@ -22,7 +23,8 @@ export default function Layout() {
   }, [open])
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="relative z-10 flex min-h-screen flex-col">
+      <Starfield />
       <ScrollProgress />
       <Cursor />
       <a

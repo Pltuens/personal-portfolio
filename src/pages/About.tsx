@@ -62,13 +62,34 @@ export default function About() {
         }
       />
 
+      {/* 数据带：给页面一个视觉重音 */}
+      <section className="border-b border-line">
+        <div className="container-page grid grid-cols-2 gap-px bg-line md:grid-cols-4">
+          {[
+            ['03', '项目', 'Cases'],
+            ['02', '原型年份', 'Years'],
+            ['01', '实习', 'Internship'],
+            ['01', '省级一等奖', 'Award'],
+          ].map(([n, label, en]) => (
+            <div key={label} className="bg-paper px-5 py-7">
+              <p className="font-display text-[clamp(2.1rem,4vw,3.1rem)] leading-none tracking-[-0.03em] text-accent">
+                {n}
+              </p>
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+                {label} <span className="text-muted/50">/ {en}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* 方法 */}
       <section className="container-page py-16">
         <SectionHeading eyebrow="Method" title="我怎么工作" />
         <div className="grid gap-10 md:grid-cols-3">
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i * 70}>
-              <div className="border-t border-ink/20 pt-4">
+              <div className="group border-t border-line pt-4 transition-colors hover:border-accent/50">
                 <span className="font-mono text-[11px] text-accent">
                   {String(i + 1).padStart(2, '0')}
                 </span>
@@ -81,7 +102,7 @@ export default function About() {
       </section>
 
       {/* 能力 */}
-      <section className="border-y border-line bg-surface/60">
+      <section className="hatch border-y border-line bg-surface">
         <div className="container-page py-16">
           <SectionHeading eyebrow="Capability" title="能力范围" />
           <div className="divide-y divide-line">

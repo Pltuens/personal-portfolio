@@ -31,7 +31,7 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
-    background-color: var(--color-paper);
+    background-color: #050912;
   }
 
   body {
@@ -44,21 +44,23 @@
     -webkit-font-smoothing: antialiased;
     font-synthesis: none;
     overflow-x: hidden;
-    background-color: var(--color-paper);
-    /* 顶部冷光 + 细网格，固定不随滚动 */
+    background-color: #050912;
+    /* 深空：暗角 + 三团星云 + 极淡网格（星空由 Starfield 画在最下层） */
     background-image:
-      radial-gradient(
-        1100px 520px at 50% -18%,
-        rgba(53, 226, 255, 0.11),
-        transparent 72%
-      ),
-      linear-gradient(to bottom, rgba(53, 226, 255, 0.035) 1px, transparent 1px),
-      linear-gradient(to right, rgba(53, 226, 255, 0.035) 1px, transparent 1px);
+      radial-gradient(135% 110% at 50% 36%, transparent 42%, rgba(2, 4, 10, 0.42) 100%),
+      radial-gradient(1250px 720px at 50% -14%, rgba(53, 226, 255, 0.2), transparent 70%),
+      radial-gradient(880px 620px at 88% 4%, rgba(167, 139, 250, 0.16), transparent 68%),
+      radial-gradient(900px 700px at 4% 84%, rgba(53, 226, 255, 0.055), transparent 72%),
+      linear-gradient(to bottom, rgba(53, 226, 255, 0.018) 1px, transparent 1px),
+      linear-gradient(to right, rgba(53, 226, 255, 0.018) 1px, transparent 1px);
     background-size:
       auto,
-      68px 68px,
-      68px 68px;
-    background-attachment: fixed, fixed, fixed;
+      auto,
+      auto,
+      auto,
+      72px 72px,
+      72px 72px;
+    background-attachment: fixed;
   }
 
   ::selection {
@@ -538,6 +540,25 @@
 .dotgrid {
   background-image: radial-gradient(rgba(53, 226, 255, 0.16) 1px, transparent 1px);
   background-size: 10px 10px;
+}
+
+/* 斜纹：打破"全是网格"的单调，用于个别区块 */
+.hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(53, 226, 255, 0.055) 0 1px,
+    transparent 1px 9px
+  );
+}
+
+/* 青色调渐层底：给某个区块一个"发光"的层次，而不是又一块纯暗 */
+.glow-panel {
+  background-image: linear-gradient(
+    180deg,
+    rgba(53, 226, 255, 0.07),
+    rgba(53, 226, 255, 0.015) 42%,
+    transparent 100%
+  );
 }
 
 /* 准星光标：只在精确指针设备上启用 */

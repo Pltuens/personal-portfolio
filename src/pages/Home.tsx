@@ -279,7 +279,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------------------ 能力 */}
-      <section id="capability" className="scroll-mt-20 border-y border-line bg-surface/60">
+      <section id="capability" className="glow-panel scroll-mt-20 border-y border-line">
         <div className="container-page py-16 md:py-20">
           <SectionHeading eyebrow="Capability" title="我能交付什么" />
           <div className="grid gap-x-12 gap-y-10 sm:grid-cols-2">

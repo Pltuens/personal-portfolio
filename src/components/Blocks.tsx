@@ -61,7 +61,7 @@ function BlockView({ block }: { block: Block }) {
             </thead>
             <tbody>
               {block.rows.map((row, i) => (
-                <tr key={i} className="border-b border-line align-top">
+                <tr key={i} className="border-b border-line align-top transition-colors hover:bg-surface/60">
                   {row.map((cell, j) => (
                     <td
                       key={j}

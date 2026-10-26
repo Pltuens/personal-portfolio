@@ -45,7 +45,7 @@ function BlockView({ block }: { block: Block }) {
 
     case 'table':
       return (
-        <div className="-mx-5 overflow-x-auto px-5 md:mx-0 md:px-0">
+        <div className="w-full max-w-full overflow-x-auto">
           <table className="w-full min-w-[520px] border-collapse text-left text-[13.5px]">
             <thead>
               <tr className="border-b border-ink/70">
@@ -83,7 +83,7 @@ function BlockView({ block }: { block: Block }) {
       return (
         <aside className="max-w-[68ch] border-l-2 border-accent bg-surface px-5 py-4">
           {block.title && (
-            <p className="mb-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-accent">
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.14em] text-accent">
               {block.title}
             </p>
           )}

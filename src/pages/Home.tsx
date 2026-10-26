@@ -137,7 +137,7 @@ export default function Home() {
           ))}
         </div>
 
-        <p className="mt-6 max-w-[62ch] font-mono text-[10.5px] leading-relaxed tracking-wide text-muted">
+        <p className="mt-6 max-w-[62ch] font-mono text-[11.5px] leading-relaxed tracking-wide text-muted">
           说明：以上条目为版面结构演示，标注「示例条目」的项目内容不代表真实项目成果，正式资料替换后角标会移除。
         </p>
       </section>

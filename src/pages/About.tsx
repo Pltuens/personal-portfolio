@@ -169,7 +169,7 @@ export default function About() {
           {tools.map((t) => (
             <li
               key={t}
-              className="border border-line px-3 py-1.5 font-mono text-[11px] text-ink-soft"
+              className="border border-line px-3 py-1.5 font-mono text-[12px] text-ink-soft"
             >
               {t}
             </li>
@@ -200,7 +200,7 @@ export default function About() {
           </div>
         </div>
         {contact.email === '' && (
-          <p className="mt-6 font-mono text-[10px] tracking-wide text-muted">
+          <p className="mt-6 font-mono text-[11px] tracking-wide text-muted">
             * 邮箱尚未填写，页面不会显示虚构联系方式。
           </p>
         )}

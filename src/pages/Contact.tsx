@@ -48,7 +48,7 @@ export default function Contact() {
                 </p>
               </div>
             )}
-            <p className="mt-8 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+            <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
               通常 1—2 天内回复
             </p>
           </div>
@@ -144,7 +144,7 @@ export default function Contact() {
               如果后续需要公开某个项目文档，会先确认授权。
             </p>
           </div>
-          <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
             {profile.nameEn} · {profile.seeking}
           </p>
         </div>

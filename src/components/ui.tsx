@@ -20,10 +20,19 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current
     if (!el) return
+
+    // 已经在首屏内的元素直接显示，避免刷新后首屏空白
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight * 1.05) {
+      setSeen(true)
+      return
+    }
+
     if (typeof IntersectionObserver === 'undefined') {
       setSeen(true)
       return
     }
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -36,7 +45,14 @@ export function Reveal({
       { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
     )
     io.observe(el)
-    return () => io.disconnect()
+
+    // 兜底：观察器失效或元素尺寸为 0 时，3 秒后无条件显示
+    const fallback = window.setTimeout(() => setSeen(true), 3000)
+
+    return () => {
+      io.disconnect()
+      window.clearTimeout(fallback)
+    }
   }, [])
 
   const Comp = Tag as any
@@ -142,9 +158,11 @@ export function PageHeader({
     <header className="border-b border-line pt-14 pb-10 md:pt-20 md:pb-14">
       <div className="container-page">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-3xl">
+          <div className="max-w-4xl">
             <Label>{eyebrow}</Label>
-            <h1 className="display-xl mt-4">{title}</h1>
+            <h1 className="mt-4 font-display text-[clamp(2.05rem,4.2vw,3.5rem)] leading-[1.06] font-medium tracking-[-0.025em]">
+              {title}
+            </h1>
             {lead && (
               <p className="mt-6 max-w-2xl text-[15px] leading-[1.85] text-ink-soft md:text-base">
                 {lead}

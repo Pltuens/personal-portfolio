@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import { contact, profile } from '../data/profile'
 import { Arrow, Label } from './ui'
 
@@ -12,11 +12,6 @@ const NAV = [
 
 export default function Layout() {
   const [open, setOpen] = useState(false)
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    setOpen(false)
-  }, [pathname])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -107,6 +102,7 @@ export default function Layout() {
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `flex items-baseline justify-between border-b border-line-soft py-4 text-[15px] ${
                       isActive ? 'text-ink' : 'text-muted'

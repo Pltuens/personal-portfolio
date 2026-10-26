@@ -67,13 +67,12 @@ export default function ProjectDetail() {
         <div className="border border-line bg-surface">
           <ProjectArt art={project.art} className="h-auto w-full" />
         </div>
-        <p className="mt-3 font-mono text-[10.5px] tracking-wide text-muted">
+        <p className="mt-3 font-mono text-[11.5px] tracking-wide text-muted">
           图示为原创结构示意，非项目截图
         </p>
       </div>
 
       <div className="container-page grid gap-12 pt-12 md:grid-cols-12 md:gap-8 md:pt-16">
-        {/* 目录 */}
         <aside className="md:col-span-3">
           <div className="md:sticky md:top-24">
             <Label>Contents</Label>
@@ -111,7 +110,7 @@ export default function ProjectDetail() {
         </aside>
 
         {/* 正文 */}
-        <div className="md:col-span-9">
+        <div className="min-w-0 md:col-span-9">
           <p className="mb-12 max-w-[60ch] border-l-2 border-ink pl-5 text-[15px] leading-[1.9] text-ink">
             {project.summary}
           </p>

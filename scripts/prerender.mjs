@@ -115,11 +115,11 @@ for (const route of ROUTES) {
     process.exit(1)
   }
 
-  // 根路由直接覆盖 dist/index.html；其余写到 dist/<path>/index.html
+  // 输出成扁平的 <path>.html，而不是 <path>/index.html。
+  // 目录形式会被 Cloudflare Pages 以 308 补成带斜杠的地址，
+  // 结果 canonical 和用户实际打开的 URL 不一致；扁平文件可以直接命中，无跳转。
   const out =
-    route.path === '/'
-      ? templatePath
-      : join(DIST, route.path.replace(/^\//, ''), 'index.html')
+    route.path === '/' ? templatePath : join(DIST, `${route.path.replace(/^\//, '')}.html`)
 
   mkdirSync(dirname(out), { recursive: true })
   writeFileSync(out, html, 'utf8')

@@ -124,10 +124,12 @@ personal-portfolio/
 
 ## 部署到 Cloudflare Pages
 
-构建参数：
+**线上地址：https://personal-portfolio-34b.pages.dev**
 
 | 配置项 | 值 |
 | --- | --- |
+| Cloudflare 项目名 | `personal-portfolio` |
+| 生产分支 | `master` |
 | 框架预设 | Vite |
 | 构建命令 | `npm run build` |
 | 输出目录 | `dist` |
@@ -135,22 +137,27 @@ personal-portfolio/
 
 `public/_redirects` 已包含 `/*  /index.html  200`，保证刷新 `/works/xxx` 不 404。
 
-### 方式 A：Git 集成（推荐）
-
-1. 把仓库推到 GitHub。
-2. Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git。
-3. 选择 `personal-portfolio` 仓库，填入上表参数，Save and Deploy。
-4. 之后每次 `git push` 自动重新构建发布。
-
-### 方式 B：命令行
+### 当前使用的部署方式（手动，已验证可用）
 
 ```bash
-npx wrangler pages project create personal-portfolio --production-branch main
 npm run build
-npx wrangler pages deploy dist --project-name personal-portfolio
+npx wrangler pages deploy dist --project-name personal-portfolio --branch master
 ```
 
-需要先 `npx wrangler login`（浏览器授权）。
+首次使用需要 `npx wrangler login`（会打开浏览器授权，一次即可）。
+部署成功后输出形如 `https://<hash>.personal-portfolio-34b.pages.dev` 的预览链接，
+`https://personal-portfolio-34b.pages.dev` 始终指向最新一次生产部署。
+
+### 可选：改成推送即自动发布
+
+1. Cloudflare Dashboard → Workers & Pages → `personal-portfolio` → Settings → Builds & deployments
+   → Connect Git，选择 `Pltuens/personal-portfolio`，分支 `master`，填入上表参数。
+2. 之后每次 `git push` 自动重新构建发布。
+
+### 注意
+
+- `npx wrangler deploy` 是 Worker 部署命令，静态站必须用 `wrangler pages deploy`。
+- 命令行部署不会自动更新 GitHub 仓库，也不会触发 Git 集成；两者是独立通道。
 
 ## 已知限制
 

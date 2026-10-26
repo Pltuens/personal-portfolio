@@ -1,0 +1,159 @@
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
+
+/* ---------------------------------------------------------------- 入场动画 */
+
+export function Reveal({
+  children,
+  delay = 0,
+  className = '',
+  as: Tag = 'div',
+}: {
+  children: ReactNode
+  delay?: number
+  className?: string
+  as?: 'div' | 'section' | 'li' | 'article' | 'header'
+}) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [seen, setSeen] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (typeof IntersectionObserver === 'undefined') {
+      setSeen(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setSeen(true)
+            io.disconnect()
+          }
+        })
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  const Comp = Tag as any
+  return (
+    <Comp
+      ref={ref}
+      className={`reveal ${seen ? 'is-visible' : ''} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </Comp>
+  )
+}
+
+/* ------------------------------------------------------------------ 元信息 */
+
+export function useMeta(title: string, description?: string) {
+  useEffect(() => {
+    document.title = title
+    if (description) {
+      let el = document.querySelector<HTMLMetaElement>('meta[name="description"]')
+      if (!el) {
+        el = document.createElement('meta')
+        el.name = 'description'
+        document.head.appendChild(el)
+      }
+      el.content = description
+    }
+  }, [title, description])
+}
+
+/* -------------------------------------------------------------------- 原子 */
+
+export function Label({ children }: { children: ReactNode }) {
+  return <span className="label">{children}</span>
+}
+
+export function DemoBadge({ children = '示例条目' }: { children?: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 border border-line bg-paper-deep/60 px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+      <span className="h-1 w-1 rounded-full bg-accent/70" />
+      {children}
+    </span>
+  )
+}
+
+export function Tag({ children }: { children: ReactNode }) {
+  return (
+    <span className="border border-line px-2.5 py-1 font-mono text-[11px] tracking-wide text-ink-soft">
+      {children}
+    </span>
+  )
+}
+
+export function Arrow({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="none">
+      <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  )
+}
+
+export function SectionHeading({
+  eyebrow,
+  title,
+  action,
+}: {
+  eyebrow: string
+  title: string
+  action?: { label: string; to: string }
+}) {
+  return (
+    <div className="mb-8 flex items-end justify-between gap-6 border-b border-line pb-4">
+      <div className="flex items-baseline gap-4">
+        <Label>{eyebrow}</Label>
+        <h2 className="display-m">{title}</h2>
+      </div>
+      {action && (
+        <Link
+          to={action.to}
+          className="link-underline hidden shrink-0 items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted hover:text-ink sm:flex"
+        >
+          {action.label}
+          <Arrow className="h-3.5 w-3.5" />
+        </Link>
+      )}
+    </div>
+  )
+}
+
+export function PageHeader({
+  eyebrow,
+  title,
+  lead,
+  right,
+}: {
+  eyebrow: string
+  title: ReactNode
+  lead?: string
+  right?: ReactNode
+}) {
+  return (
+    <header className="border-b border-line pt-14 pb-10 md:pt-20 md:pb-14">
+      <div className="container-page">
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-3xl">
+            <Label>{eyebrow}</Label>
+            <h1 className="display-xl mt-4">{title}</h1>
+            {lead && (
+              <p className="mt-6 max-w-2xl text-[15px] leading-[1.85] text-ink-soft md:text-base">
+                {lead}
+              </p>
+            )}
+          </div>
+          {right}
+        </div>
+      </div>
+    </header>
+  )
+}

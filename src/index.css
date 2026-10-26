@@ -1,0 +1,205 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-paper: #f3f0e8;
+  --color-paper-deep: #e8e2d4;
+  --color-surface: #fbfaf5;
+  --color-ink: #17150f;
+  --color-ink-soft: #3b382e;
+  --color-muted: #6d6858;
+  --color-line: #d8d1bf;
+  --color-line-soft: #e6e0d2;
+  --color-accent: #a8432a;
+  --color-accent-soft: #c4694e;
+  --color-jade: #2d4a44;
+
+  --font-display:
+    Georgia, 'Times New Roman', 'Songti SC', 'Noto Serif SC', 'SimSun', serif;
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-synthesis: none;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: #17150f;
+    color: #f3f0e8;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 1220px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.35rem, 6.2vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+}
+
+@utility display-l {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.85rem, 3.9vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.022em;
+}
+
+@utility display-m {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+}
+
+@utility hairline {
+  border-top: 1px solid var(--color-line);
+}
+
+/* 细微的纸面颗粒，避免大面积纯色显得廉价 */
+@utility paper-grain {
+  position: relative;
+}
+
+.paper-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(23, 21, 15, 0.08) 0.5px,
+    transparent 0.6px
+  );
+  background-size: 4px 4px;
+  mix-blend-mode: multiply;
+}
+
+/* 入场动画：由 IntersectionObserver 触发 */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s var(--ease-out-soft),
+    transform 0.7s var(--ease-out-soft);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* 链接下划线动画 */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease-out-soft);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.link-underline.is-static::after {
+  transform: scaleX(1);
+  opacity: 0.35;
+}

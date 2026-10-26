@@ -88,7 +88,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       className={`intro ${leaving ? 'is-out' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label="进入作品集"
+      aria-label="欢迎页，按任意键或点击进入作品集"
       onClick={enter}
     >
       <div className="intro-aurora" aria-hidden="true" />
@@ -127,15 +127,17 @@ export default function Intro({ onDone }: { onDone: () => void }) {
           <span className="tabular-nums">{String(pct).padStart(3, '0')}</span>
         </div>
 
-        <button
-          type="button"
-          className={`intro-enter ${ready ? 'is-ready' : ''}`}
-          onClick={enter}
-          aria-label="点击进入作品集"
-        >
-          <i className="intro-enter-dot" aria-hidden="true" />
-          <span>{ready ? '点击进入' : '载入中'}</span>
-        </button>
+        <p className={`intro-continue ${ready ? 'is-ready' : ''}`} aria-live="polite">
+          {ready ? (
+            <>
+              <span className="pointer-only">按任意键继续</span>
+              <span className="touch-only">点击任意处继续</span>
+              <i className="intro-caret" aria-hidden="true" />
+            </>
+          ) : (
+            '正在载入'
+          )}
+        </p>
       </div>
     </div>
   )

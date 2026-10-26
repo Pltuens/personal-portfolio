@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { Blocks } from '../components/Blocks'
 import { HeroArt } from '../components/ProjectArt'
+import VideoPlayer from '../components/VideoPlayer'
 import { Arrow, Label, Reveal, StatusBadge, useMeta } from '../components/ui'
 import { getProject, nextProject } from '../data/projects'
 import NotFound from './NotFound'
@@ -24,7 +25,7 @@ export default function ProjectDetail() {
         <div className="container-page">
           <Link
             to="/works"
-            className="inline-flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-ink"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-ink"
           >
             <Arrow className="h-3.5 w-3.5 rotate-180" />
             全部作品
@@ -52,7 +53,7 @@ export default function ProjectDetail() {
                 ['时间', project.period],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-4 border-b border-line-soft py-3 last:border-b-0">
-                  <dt className="w-10 shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  <dt className="w-10 shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
                     {k}
                   </dt>
                   <dd className="text-[13px] leading-snug text-ink-soft">{v}</dd>
@@ -68,7 +69,7 @@ export default function ProjectDetail() {
           <HeroArt art={project.art} />
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-          <p className="font-mono text-[11.5px] tracking-wide text-muted">
+          <p className="font-mono text-[12px] tracking-wide text-muted">
             图示为原创结构示意，非项目截图
           </p>
           {project.links && (
@@ -79,7 +80,7 @@ export default function ProjectDetail() {
                   href={l.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group inline-flex items-center gap-2 border border-ink px-3.5 py-2 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+                  className="group inline-flex items-center gap-2 border border-ink px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
                 >
                   {l.label}
                   <Arrow className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
@@ -90,18 +91,46 @@ export default function ProjectDetail() {
         </div>
       </div>
 
+      {/* 站内演示视频 */}
+      {project.video && (
+        <div id="demo" className="container-page scroll-mt-24 pt-12 md:pt-14">
+          <div className="mx-auto w-full max-w-[920px]">
+            <div className="mb-4 flex items-baseline gap-3">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent/80">
+                Demo
+              </span>
+              <h2 className="display-m">演示视频</h2>
+            </div>
+            <VideoPlayer {...project.video} />
+          </div>
+        </div>
+      )}
+
       <div className="container-page grid gap-12 pt-12 md:grid-cols-12 md:gap-8 md:pt-16">
         <aside className="md:col-span-3">
           <div className="md:sticky md:top-24">
             <Label>Contents</Label>
             <ol className="mt-4 space-y-2">
+              {project.video && (
+                <li>
+                  <a
+                    href="#demo"
+                    className="group flex items-baseline gap-3 text-[12.5px] text-muted transition-colors hover:text-ink"
+                  >
+                    <span className="font-mono text-[11px] text-muted/50 group-hover:text-accent">
+                      00
+                    </span>
+                    演示视频
+                  </a>
+                </li>
+              )}
               {project.sections.map((s, i) => (
                 <li key={s.id}>
                   <a
                     href={`#${s.id}`}
                     className="group flex items-baseline gap-3 text-[12.5px] text-muted transition-colors hover:text-ink"
                   >
-                    <span className="font-mono text-[10px] text-line group-hover:text-accent">
+                    <span className="font-mono text-[11px] text-muted/50 group-hover:text-accent">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     {s.title}
@@ -110,14 +139,14 @@ export default function ProjectDetail() {
               ))}
             </ol>
             <div className="mt-8 hidden border-t border-line pt-4 md:block">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
                 Tags
               </p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {project.tags.map((t) => (
                   <span
                     key={t}
-                    className="border border-line px-2 py-[3px] font-mono text-[10px] text-muted"
+                    className="border border-line px-2 py-[3px] font-mono text-[11px] text-muted"
                   >
                     {t}
                   </span>
@@ -142,7 +171,7 @@ export default function ProjectDetail() {
                   </span>
                   <h2 className="display-m">{section.title}</h2>
                   {section.en && (
-                    <span className="ml-auto font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted">
+                    <span className="ml-auto font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
                       {section.en}
                     </span>
                   )}
@@ -152,12 +181,12 @@ export default function ProjectDetail() {
             </Reveal>
           ))}
 
-          <div className="mt-6 border-t border-ink/70 pt-8">
+          <div className="mt-6 border-t border-accent/25 pt-8">
             <Label>Takeaways</Label>
             <ul className="mt-5 grid gap-4 sm:grid-cols-3">
               {project.takeaways.map((t, i) => (
                 <li key={i} className="border-t border-line pt-3 text-[13px] leading-[1.8] text-ink-soft">
-                  <span className="mb-2 block font-mono text-[10px] text-accent">
+                  <span className="mb-2 block font-mono text-[11px] text-accent">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   {t}

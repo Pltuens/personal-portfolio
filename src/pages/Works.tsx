@@ -29,7 +29,7 @@ export default function Works() {
         }
         lead="三个项目分别对应三种能力：把竞品系统拆到可复用的框架、把战斗系统在引擎里实现出来、把关卡与节奏调成一整套体验。"
         right={
-          <div className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">
+          <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
             2024 — 2026
           </div>
@@ -46,14 +46,14 @@ export default function Works() {
               aria-pressed={active === c}
               className={`border px-3.5 py-1.5 font-mono text-[11px] tracking-wide transition-colors ${
                 active === c
-                  ? 'border-ink bg-ink text-paper'
-                  : 'border-line text-muted hover:border-ink hover:text-ink'
+                  ? 'border-accent bg-accent/10 text-accent'
+                  : 'border-line text-muted hover:border-accent/40 hover:text-accent'
               }`}
             >
               {c}
             </button>
           ))}
-          <span className="ml-auto font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">
+          <span className="ml-auto font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
             {String(list.length).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
           </span>
         </div>
@@ -63,7 +63,7 @@ export default function Works() {
             <Reveal key={p.slug} delay={i * 70}>
               <Link
                 to={`/works/${p.slug}`}
-                className="group grid border border-line bg-surface transition-colors hover:border-ink/40 md:grid-cols-12"
+                className="tech-card group grid border border-line bg-surface md:grid-cols-12"
               >
                 <div
                   className={`hud-frame scan overflow-hidden border-b border-line md:col-span-5 md:border-b-0 ${
@@ -94,7 +94,7 @@ export default function Works() {
                   </div>
 
                   <div className="flex flex-wrap items-end justify-between gap-4">
-                    <dl className="grid grid-cols-2 gap-x-8 gap-y-2 font-mono text-[10.5px] tracking-wide text-muted sm:grid-cols-3">
+                    <dl className="grid grid-cols-2 gap-x-8 gap-y-2 font-mono text-[11px] tracking-wide text-muted sm:grid-cols-3">
                       <div>
                         <dt className="uppercase">类型</dt>
                         <dd className="mt-1 font-sans text-[12.5px] tracking-normal text-ink-soft">

@@ -31,8 +31,8 @@ export default function Home() {
           <div className="md:col-span-8">
             <div className="flex items-center gap-3">
               <Label>Game Design Portfolio</Label>
-              <span className="font-mono text-[10px] text-line">/</span>
-              <span className="font-mono text-[10px] tracking-[0.16em] text-muted">
+              <span className="font-mono text-[11px] text-accent/55">/</span>
+              <span className="font-mono text-[11px] tracking-[0.16em] text-muted">
                 2026
               </span>
             </div>
@@ -49,14 +49,14 @@ export default function Home() {
             <div className="flex flex-wrap gap-3">
               <Link
                 to="/works"
-                className="group inline-flex items-center gap-2 border border-ink bg-ink px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-transparent hover:text-ink"
+                className="group inline-flex items-center gap-2 border border-accent bg-accent px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[#04121a] transition-colors hover:bg-transparent hover:text-accent"
               >
                 查看作品
                 <Arrow className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <a
                 href={`mailto:${contact.email}`}
-                className="inline-flex items-center gap-2 border border-line px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+                className="inline-flex items-center gap-2 border border-line px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:border-accent/50 hover:text-accent"
               >
                 发邮件
               </a>
@@ -100,7 +100,7 @@ export default function Home() {
         <Reveal>
           <Link
             to={`/works/${featured.slug}`}
-            className="group grid border border-line bg-surface transition-colors hover:border-ink/40 md:grid-cols-12"
+            className="tech-card group grid border border-line bg-surface md:grid-cols-12"
           >
             <div className="hud-frame scan overflow-hidden border-b border-line md:col-span-7 md:order-2 md:border-b-0 md:border-l">
               <ProjectArt
@@ -128,7 +128,7 @@ export default function Home() {
                   {featured.tags.slice(0, 3).map((t) => (
                     <span
                       key={t}
-                      className="border border-line px-2 py-1 font-mono text-[10.5px] text-muted"
+                      className="border border-line px-2 py-1 font-mono text-[11px] text-muted"
                     >
                       {t}
                     </span>
@@ -158,7 +158,7 @@ export default function Home() {
                   <p className="mt-1.5 text-[13.5px] text-muted">{p.subtitle}</p>
                 </div>
                 <div className="flex items-center gap-6">
-                  <span className="hidden font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted sm:inline">
+                  <span className="hidden font-mono text-[11px] uppercase tracking-[0.12em] text-muted sm:inline">
                     {p.category}
                   </span>
                   <Arrow className="h-4 w-4 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
@@ -185,7 +185,7 @@ export default function Home() {
                 <div className="border-t border-ink/15 pt-4">
                   <div className="flex items-baseline justify-between">
                     <h3 className="font-display text-[17px]">{g.title}</h3>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                    <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
                       {g.en}
                     </span>
                   </div>
@@ -206,34 +206,34 @@ export default function Home() {
 
       {/* ------------------------------------------------------------ 联系 */}
       <section className="container-page py-16 md:py-20">
-        <Spotlight className="scan overflow-hidden px-6 py-12 text-paper md:px-12 md:py-16">
+        <Spotlight className="scan overflow-hidden px-6 py-12 md:px-12 md:py-16">
           <div className="relative z-10 grid gap-8 md:grid-cols-[1.35fr_1fr] md:items-end">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/45">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent/70">
                 Contact / 2028 届
               </p>
-              <h2 className="display-l mt-4 text-paper">
+              <h2 className="display-l mt-4 text-ink">
                 <Glitch text="在找能做战斗的策划？" />
               </h2>
-              <p className="mt-4 max-w-[46ch] text-[14px] leading-[1.9] text-paper/70">
+              <p className="mt-4 max-w-[46ch] text-[14px] leading-[1.9] text-ink-soft">
                 作品、拆解文档和演示视频都可以直接看；如果需要更细的设计过程，我可以按项目补材料。
               </p>
             </div>
             <div className="flex flex-col gap-3 md:items-end">
               <a
                 href={`mailto:${contact.email}`}
-                className="group inline-flex items-center gap-2 bg-paper px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:bg-accent hover:text-paper"
+                className="group inline-flex items-center gap-2 bg-accent px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[#04121a] transition-colors hover:bg-accent-soft"
               >
                 发邮件
                 <Arrow className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </a>
-              <span className="font-mono text-[10.5px] tracking-[0.1em] text-paper/45">
+              <span className="font-mono text-[11px] tracking-[0.1em] text-muted">
                 {contact.email}
               </span>
             </div>
           </div>
 
-          <div className="relative z-10 mt-10 grid grid-cols-2 gap-4 border-t border-paper/15 pt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-paper/45 sm:grid-cols-4">
+          <div className="relative z-10 mt-10 grid grid-cols-2 gap-4 border-t border-line pt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted sm:grid-cols-4">
             <span>03 cases</span>
             <span>UE5 / GAS</span>
             <span>Teardown → Build</span>

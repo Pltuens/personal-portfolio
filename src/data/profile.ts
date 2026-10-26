@@ -12,7 +12,7 @@ export const profile = {
   nameCn: '',
   role: '玩法 / 系统 / 战斗策划',
   /** 求职状态 */
-  seeking: '2028 届 · 求职中',
+  seeking: '2028 届 · 开放机会',
   tagline: '拆得开，也做得出来。',
   location: '',
   /** 首页大标题，\n 手动换行 */
@@ -23,8 +23,8 @@ export const profile = {
   facts: [
     { label: '方向', value: '玩法 / 系统 / 战斗' },
     { label: '在读', value: '湖北师范大学 · 软件工程' },
-    { label: '工具', value: 'UE5 · GAS · 拆解文档' },
-    { label: '状态', value: '2028 届 · 求职中' },
+    { label: '现在', value: '腾娱互动 · 策划培训生' },
+    { label: '届别', value: '2028 届' },
   ],
 }
 
@@ -138,9 +138,18 @@ export type TimelineItem = {
   title: string
   org: string
   detail: string
+  /** 正在进行的经历会显示「进行中」标记 */
+  current?: boolean
 }
 
 export const timeline: TimelineItem[] = [
+  {
+    period: '2026.09 — 至今',
+    title: '策划培训生',
+    org: '深圳腾娱互动 · 武汉分公司',
+    detail: '',
+    current: true,
+  },
   {
     period: '2028 届',
     title: '软件工程 · 本科',

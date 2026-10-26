@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import KnowledgeSphere from '../components/KnowledgeSphere'
 import { Arrow, Label, PageHeader, Reveal, SectionHeading, useMeta } from '../components/ui'
 import { contact, pivots, profile, skillGroups, timeline } from '../data/profile'
 
@@ -44,7 +45,7 @@ export default function About() {
         }
         lead={profile.lead}
         right={
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-3 font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
             <div>
               <dt>方向</dt>
               <dd className="mt-1 font-sans text-[12.5px] normal-case tracking-normal text-ink">
@@ -68,7 +69,7 @@ export default function About() {
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i * 70}>
               <div className="border-t border-ink/20 pt-4">
-                <span className="font-mono text-[10px] text-accent">
+                <span className="font-mono text-[11px] text-accent">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <h3 className="mt-2 font-display text-[19px]">{p.title}</h3>
@@ -88,7 +89,7 @@ export default function About() {
               <div key={g.title} className="grid gap-3 py-6 md:grid-cols-12 md:gap-8">
                 <div className="md:col-span-3">
                   <h3 className="font-display text-[17px]">{g.title}</h3>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
                     {g.en}
                   </span>
                 </div>
@@ -120,7 +121,7 @@ export default function About() {
             <div key={p.name} className="group bg-paper p-6 transition-colors hover:bg-surface">
               <div className="flex items-baseline justify-between">
                 <h3 className="font-display text-[17px]">{p.name}</h3>
-                <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
                   {p.en}
                 </span>
               </div>
@@ -131,6 +132,19 @@ export default function About() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* 知识链路球 */}
+      <section className="container-page pb-16">
+        <SectionHeading eyebrow="Knowledge" title="知识链路" />
+        <p className="mb-8 max-w-[62ch] text-[13.5px] leading-[1.9] text-muted">
+          这些点是我现在真正能用上的东西，连线表示它们在实际项目里怎么互相支撑：
+          拆解得到的判断会落到数值与系统，数值又要靠战斗框架兑现，最后都回到玩法本身。
+          拖一下可以看到背后的部分。
+        </p>
+        <Reveal>
+          <KnowledgeSphere />
+        </Reveal>
       </section>
 
       {/* 经历 */}
@@ -144,12 +158,22 @@ export default function About() {
                   {t.period}
                 </span>
                 <div className="md:col-span-6">
-                  <h3 className="font-display text-[17px]">{t.title}</h3>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <h3 className="font-display text-[17px]">{t.title}</h3>
+                    {t.current && (
+                      <span className="inline-flex items-center gap-1.5 border border-accent/40 px-2 py-[2px] font-mono text-[11px] tracking-[0.12em] text-accent">
+                        <span className="h-1 w-1 animate-pulse rounded-full bg-accent" />
+                        NOW
+                      </span>
+                    )}
+                  </div>
                   <p className="mt-1 text-[12.5px] text-muted">{t.org}</p>
                 </div>
-                <p className="text-[13px] leading-[1.85] text-ink-soft md:col-span-4">
-                  {t.detail}
-                </p>
+                {t.detail && (
+                  <p className="text-[13px] leading-[1.85] text-ink-soft md:col-span-4">
+                    {t.detail}
+                  </p>
+                )}
               </li>
             ))}
           </ol>

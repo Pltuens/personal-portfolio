@@ -48,11 +48,11 @@ function BlockView({ block }: { block: Block }) {
         <div className="w-full max-w-full overflow-x-auto">
           <table className="w-full min-w-[520px] border-collapse text-left text-[13.5px]">
             <thead>
-              <tr className="border-b border-ink/70">
+              <tr className="border-b border-accent/30">
                 {block.head.map((h) => (
                   <th
                     key={h}
-                    className="py-3 pr-6 font-mono text-[10px] font-normal uppercase tracking-[0.14em] text-muted"
+                    className="py-3 pr-6 font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-muted"
                   >
                     {h}
                   </th>
@@ -129,7 +129,7 @@ function BlockView({ block }: { block: Block }) {
               className="h-[clamp(220px,32vw,440px)] w-full"
             />
           </div>
-          <figcaption className="mt-3 font-mono text-[10.5px] tracking-wide text-muted">
+          <figcaption className="mt-3 font-mono text-[11px] tracking-wide text-muted">
             {block.caption}
           </figcaption>
         </figure>

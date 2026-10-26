@@ -8,14 +8,14 @@
 import type { ArtKey } from '../data/projects'
 
 const C = {
-  paper: '#f3f0e8',
-  deep: '#e8e2d4',
-  surface: '#fbfaf5',
-  ink: '#17150f',
-  line: '#d8d1bf',
-  accent: '#a8432a',
-  jade: '#2d4a44',
-  muted: '#6d6858',
+  paper: '#0a1119',
+  deep: '#080d14',
+  surface: '#0c141d',
+  ink: '#dbe8f4',
+  line: '#1e2c3a',
+  accent: '#35e2ff',
+  jade: '#a78bfa',
+  muted: '#74818f',
 }
 
 const LABEL: Record<ArtKey, string> = {
@@ -76,11 +76,11 @@ function SystemMap() {
   return (
     <g>
       <g>
-        <rect x="510" y="320" width="180" height="120" fill={C.ink} />
-        <text x="600" y="368" textAnchor="middle" fontFamily="Georgia, serif" fontSize="26" fill={C.paper}>
+        <rect x="510" y="320" width="180" height="120" fill="#0a1a24" stroke={C.accent} strokeWidth="1.4" />
+        <text x="600" y="368" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="24" letterSpacing="2" fill={C.accent}>
           ECHO
         </text>
-        <text x="600" y="392" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="3" fill={C.paper} opacity="0.65">
+        <text x="600" y="392" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="13" letterSpacing="3" fill={C.muted}>
           CORE SYSTEM
         </text>
         <line x1="546" y1="410" x2="654" y2="410" stroke={C.accent} strokeWidth="2" />

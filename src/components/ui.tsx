@@ -47,7 +47,7 @@ export function Reveal({
     io.observe(el)
 
     // 兜底：观察器失效或元素尺寸为 0 时，3 秒后无条件显示
-    const fallback = window.setTimeout(() => setSeen(true), 3000)
+    const fallback = window.setTimeout(() => setSeen(true), 1500)
 
     return () => {
       io.disconnect()
@@ -92,8 +92,8 @@ export function Label({ children }: { children: ReactNode }) {
 
 export function StatusBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 border border-line px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-      <span className="h-1 w-1 rounded-full bg-jade/70" />
+    <span className="inline-flex items-center gap-1.5 border border-accent/25 bg-accent/[0.06] px-2 py-[3px] font-mono text-[11px] uppercase tracking-[0.14em] text-accent-soft">
+      <span className="h-1 w-1 rounded-full bg-accent" />
       {children}
     </span>
   )
@@ -135,14 +135,14 @@ export function Ticker({ items }: { items: string[] }) {
   const row = [...items, ...items]
   return (
     <div
-      className="ticker overflow-hidden border-y border-line bg-paper-deep/30 py-2.5"
+      className="ticker overflow-hidden border-y border-line bg-paper-deep py-2.5"
       aria-hidden="true"
     >
       <div className="ticker-track flex w-max items-center">
         {row.map((t, i) => (
           <span
             key={i}
-            className="flex shrink-0 items-center gap-6 pr-6 font-mono text-[10px] uppercase tracking-[0.18em] text-muted"
+            className="flex shrink-0 items-center gap-6 pr-6 font-mono text-[11px] uppercase tracking-[0.18em] text-muted"
           >
             {t}
             <span className="text-accent/70">◆</span>
@@ -195,8 +195,10 @@ export function SectionHeading({
   action?: { label: string; to: string }
 }) {
   return (
-    <div className="mb-8 flex items-end justify-between gap-6 border-b border-line pb-4">
+    <div className="relative mb-8 flex items-end justify-between gap-6 pb-4">
+      <span className="tech-line absolute inset-x-0 bottom-0" />
       <div className="flex items-baseline gap-4">
+        <span className="font-mono text-[11px] text-accent">//</span>
         <Label>{eyebrow}</Label>
         <h2 className="display-m">{title}</h2>
       </div>
@@ -225,7 +227,8 @@ export function PageHeader({
   right?: ReactNode
 }) {
   return (
-    <header className="border-b border-line pt-14 pb-10 md:pt-20 md:pb-14">
+    <header className="relative border-b border-line pt-14 pb-10 md:pt-20 md:pb-14">
+      <span className="tech-line absolute inset-x-0 top-0" />
       <div className="container-page">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="max-w-4xl">

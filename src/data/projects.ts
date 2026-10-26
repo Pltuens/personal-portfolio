@@ -25,6 +25,21 @@ export type Section = {
 
 export type ProjectLink = { label: string; href: string; note?: string }
 
+/**
+ * 站内演示视频
+ * ------------------------------------------------------------------
+ * 视频文件放在 public/videos/ 下（mp4，H.264），然后填 src 即可直接在页面上播。
+ * 没填 src 时页面会渲染成"正在整理"的占位窗口，不会出现裂图。
+ */
+export type ProjectVideo = {
+  src?: string
+  poster?: string
+  title?: string
+  note?: string
+  externalHref?: string
+  externalLabel?: string
+}
+
 export type Project = {
   slug: string
   index: string
@@ -40,6 +55,7 @@ export type Project = {
   art: ArtKey
   tags: string[]
   links?: ProjectLink[]
+  video?: ProjectVideo
   sections: Section[]
   takeaways: string[]
 }
@@ -69,6 +85,13 @@ export const projects: Project[] = [
         note: '完整拆解案',
       },
     ],
+    video: {
+      // 视频放好后再打开这行：src: '/videos/wuwa-echo-teardown.mp4',
+      title: '系统拆解讲解',
+      note: '拆解思路的录屏还在整理，可以先看飞书文档里的完整版。',
+      externalHref: 'https://my.feishu.cn/wiki/Wv8CwjQWJiSW6hkIuaectiXhnJf',
+      externalLabel: '看拆解文档',
+    },
     sections: [
       {
         id: 'context',
@@ -216,6 +239,13 @@ export const projects: Project[] = [
     links: [
       { label: '演示视频', href: 'https://easylink.cc/5rvg6g', note: '战斗演示' },
     ],
+    video: {
+      // 视频放好后再打开这行：src: '/videos/aura-gas-arpg.mp4',
+      title: '战斗演示',
+      note: 'GAS 战斗原型的连招、受击与状态打断，成片正在压缩，先看外部版本。',
+      externalHref: 'https://easylink.cc/5rvg6g',
+      externalLabel: '外部观看',
+    },
     sections: [
       {
         id: 'position',
@@ -338,6 +368,13 @@ export const projects: Project[] = [
     links: [
       { label: '演示视频', href: 'https://easylink.cc/eij9vi', note: '战斗与关卡演示' },
     ],
+    video: {
+      // 视频放好后再打开这行：src: '/videos/slash-soulslike.mp4',
+      title: '战斗与关卡演示',
+      note: '耐力博弈与地牢循环的实机演示，成片正在压缩，先看外部版本。',
+      externalHref: 'https://easylink.cc/eij9vi',
+      externalLabel: '外部观看',
+    },
     sections: [
       {
         id: 'position',

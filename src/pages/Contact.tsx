@@ -1,5 +1,5 @@
 import { Arrow, Label, PageHeader, useMeta } from '../components/ui'
-import { contact, profile } from '../data/profile'
+import { contact } from '../data/profile'
 
 const canShare = [
   '《鸣潮》声骸系统拆解案（飞书文档）',
@@ -22,14 +22,16 @@ export default function Contact() {
             就直接说。
           </>
         }
-        lead="2028 届，找玩法 / 系统 / 战斗策划的实习与校招机会。看作品、要完整拆解文档或演示视频、聊某个战斗机制怎么搭，都可以直接联系。"
+        lead="2028 届，目前在深圳腾娱互动武汉分公司做策划培训生。看作品、要完整拆解文档或演示视频、聊某个战斗机制怎么搭，都可以直接联系。"
       />
 
       <section className="container-page py-12 md:py-16">
         <div className="grid gap-px border border-line bg-line md:grid-cols-2">
           {/* 邮箱 */}
           <div className="bg-paper p-7 md:p-9">
-            <Label>Email</Label>
+            <div>
+              <Label>Email</Label>
+            </div>
             {contact.email ? (
               <a
                 href={`mailto:${contact.email}`}
@@ -66,7 +68,7 @@ export default function Contact() {
                 >
                   <span>
                     <span className="block text-[14.5px]">GitHub</span>
-                    <span className="font-mono text-[10.5px] text-muted">
+                    <span className="font-mono text-[11px] text-muted">
                       {contact.githubLabel}
                     </span>
                   </span>
@@ -89,20 +91,25 @@ export default function Contact() {
               <li className="flex items-center justify-between py-3">
                 <span>
                   <span className="block text-[14.5px]">简历</span>
-                  <span className="font-mono text-[10.5px] text-muted">
-                    {contact.resume ? 'PDF' : '待补充'}
+                  <span className="font-mono text-[11px] text-muted">
+                    {contact.resume ? 'PDF' : '邮件索取'}
                   </span>
                 </span>
                 {contact.resume ? (
                   <a
                     href={contact.resume}
-                    className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-accent"
+                    className="font-mono text-[11px] uppercase tracking-[0.12em] text-accent"
                     download
                   >
                     下载
                   </a>
                 ) : (
-                  <span className="font-mono text-[10.5px] text-muted">PDF</span>
+                  <a
+                    href={`mailto:${contact.email}?subject=简历索取`}
+                    className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted transition-colors hover:text-accent"
+                  >
+                    邮件
+                  </a>
                 )}
               </li>
             </ul>
@@ -120,7 +127,7 @@ export default function Contact() {
           <ul className="grid gap-3 md:col-span-8 sm:grid-cols-2">
             {canShare.map((c, i) => (
               <li key={c} className="flex gap-3 text-[13.5px] leading-[1.85] text-ink-soft">
-                <span className="mt-1 font-mono text-[10px] text-accent">
+                <span className="mt-1 font-mono text-[11px] text-accent">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 {c}
@@ -130,25 +137,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* 隐私 */}
-      <section className="container-page pb-10">
-        <div className="bg-surface p-7 md:p-9">
-          <Label>Privacy</Label>
-          <div className="mt-4 grid gap-6 md:grid-cols-2">
-            <p className="text-[13px] leading-[1.9] text-ink-soft">
-              这个站点是公开求职用途，因此不放身份证件、住址、私人电话，也不放任何未获授权的公司内部资料。
-              站内的项目笔记只讲到方法层，不包含内部数值与原文档。
-            </p>
-            <p className="text-[13px] leading-[1.9] text-ink-soft">
-              代码与配置文件里不写入任何密钥或令牌；仓库中也不包含私人素材。
-              如果后续需要公开某个项目文档，会先确认授权。
-            </p>
-          </div>
-          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
-            {profile.nameEn} · {profile.seeking}
-          </p>
-        </div>
-      </section>
     </>
   )
 }

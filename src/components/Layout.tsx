@@ -29,18 +29,19 @@ export default function Layout() {
         跳到主要内容
       </a>
 
-      <header className="sticky top-0 z-50 border-b border-line bg-paper/85 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-line bg-paper/80 backdrop-blur-md">
+        <span className="tech-line absolute inset-x-0 top-0" />
         <div className="container-page flex h-16 items-center justify-between gap-6">
           <Link to="/" className="group flex items-baseline gap-3" aria-label="返回首页">
             <span className="font-display text-[19px] tracking-tight">
               {profile.nameEn}
             </span>
-            <span className="hidden font-mono text-[10px] tracking-[0.18em] text-muted sm:inline">
+            <span className="hidden font-mono text-[11px] tracking-[0.18em] text-muted sm:inline">
               PORTFOLIO
             </span>
             <span className="ml-1 hidden items-center gap-1.5 lg:flex">
               <span className="h-1 w-1 animate-pulse rounded-full bg-accent" />
-              <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
                 open to work
               </span>
             </span>
@@ -60,11 +61,11 @@ export default function Layout() {
                 {({ isActive }) => (
                   <>
                     <span>{item.label}</span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] opacity-60">
+                    <span className="font-mono text-[11px] uppercase tracking-[0.16em] opacity-60">
                       {item.en}
                     </span>
                     <span
-                      className={`absolute -bottom-[1px] left-0 h-px w-full origin-left bg-ink transition-transform duration-500 ${
+                      className={`absolute -bottom-[1px] left-0 h-px w-full origin-left bg-accent transition-transform duration-500 ${
                         isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                       }`}
                     />
@@ -76,7 +77,7 @@ export default function Layout() {
               href={contact.github}
               target="_blank"
               rel="noreferrer noopener"
-              className="ml-2 flex items-center gap-2 border border-ink px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+              className="ml-2 flex items-center gap-2 border border-accent/40 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-accent transition-colors hover:bg-accent hover:text-[#04121a]"
             >
               GitHub
               <Arrow className="h-3 w-3" />
@@ -116,7 +117,7 @@ export default function Layout() {
                   }
                 >
                   <span>{item.label}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em]">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.16em]">
                     {item.en}
                   </span>
                 </NavLink>
@@ -210,7 +211,7 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-muted sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 {profile.nameEn}</span>
           <span className="normal-case tracking-normal">
             作品文档与演示视频按需提供，未公开内部资料

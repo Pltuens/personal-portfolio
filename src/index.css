@@ -1,5 +1,55 @@
 @import 'tailwindcss';
 
+/* ---------------------------------------------------------------- 自托管字体
+ * 只保留 latin 子集（各 10–31KB），中文不下载、自动回落到系统字体，
+ * 于是同一行里「英文用几何体、中文用黑体」自然形成混排对比。
+ * Chakra Petch（SIL OFL）负责标题与编号，JetBrains Mono（SIL OFL）负责标签。
+ */
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('/fonts/chakrapetch-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('/fonts/chakrapetch-600.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('/fonts/chakrapetch-700.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrainsmono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrainsmono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+2000-206F, U+20AC, U+2122, U+2212;
+}
+
 @theme {
   /* 深色科技风：近黑底 + 青色主强调 + 紫色次强调 */
   --color-paper: #05080d;
@@ -14,15 +64,22 @@
   --color-accent-soft: #8ceeff;
   --color-jade: #a78bfa;
 
+  /* 四层字体分工：
+   * display → 英文/数字用几何科幻体，中文回落到黑体
+   * sans    → 正文
+   * mono    → 标签、编号、状态栏
+   * serif   → 少量点缀（引文、签名句），刻意和科技风拉开对比
+   */
   --font-display:
-    system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei', sans-serif;
+    'Chakra Petch', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui,
+    sans-serif;
   --font-sans:
     system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', sans-serif;
   --font-mono:
-    ui-monospace, 'SF Mono', 'JetBrains Mono', 'Cascadia Code', Consolas,
-    'Courier New', monospace;
+    'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  --font-serif:
+    'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', STSong, SimSun, Georgia, serif;
 
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -78,10 +135,15 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.022em;
     color: var(--color-ink);
     text-wrap: balance;
+  }
+
+  h3,
+  h4 {
+    font-weight: 600;
   }
 
   p {
@@ -132,7 +194,7 @@
 
 @utility display-hero {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(2.2rem, 5.4vw, 4.4rem);
   /* 中文字形上下本来就顶着 em 框，行高低于 1.05 会串行 */
   line-height: 1.08;
@@ -143,12 +205,21 @@
 
 @utility display-xl {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(2.35rem, 6.2vw, 4.4rem);
   line-height: 1.03;
   letter-spacing: -0.032em;
   color: #f4f9fd;
   text-shadow: 0 0 48px rgba(53, 226, 255, 0.22);
+}
+
+/* 衬线点缀：给导语、引文、签名句一点人文温度，和几何标题拉开对比。
+ * 不设斜体 —— 中文没有真正的斜体，合成倾斜会糊。
+ * 深色底上宋体的细横笔会发虚，所以这里固定 500 起步。 */
+@utility serif-accent {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: 0.015em;
 }
 
 @utility display-l {
@@ -583,6 +654,16 @@
   }
 }
 
+/* 入场页期间换回普通指针：准星会让人不确定"这里能不能点" */
+body.intro-open,
+body.intro-open * {
+  cursor: pointer;
+}
+
+body.intro-open .crosshair {
+  display: none;
+}
+
 /* 滚动进度条 */
 .scroll-progress {
   position: fixed;
@@ -746,10 +827,10 @@
   gap: 0.02em;
   margin-top: 1.5rem;
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(2.6rem, 11vw, 7rem);
   line-height: 1;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: #f4f9fd;
   text-shadow: 0 0 70px rgba(53, 226, 255, 0.45);
 }
@@ -809,14 +890,84 @@
   color: rgba(53, 226, 255, 0.9);
 }
 
-.intro-skip {
-  margin-top: 3.2rem;
+/* 进入按钮：进度跑满后亮起，必须由用户点击才推门 */
+.intro-enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 2.5rem;
+  padding: 0.62rem 1.55rem;
+  border: 1px solid rgba(53, 226, 255, 0.22);
+  background: rgba(53, 226, 255, 0.04);
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: rgba(116, 129, 143, 0.75);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(140, 160, 176, 0.65);
+  cursor: pointer;
   opacity: 0;
-  animation: intro-fade 0.8s var(--ease-out-soft) 1.6s forwards;
+  animation: intro-fade 0.7s var(--ease-out-soft) 1.45s forwards;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.intro-enter-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.intro-enter.is-ready {
+  color: #d8f6ff;
+  border-color: rgba(53, 226, 255, 0.72);
+  background: rgba(53, 226, 255, 0.1);
+  animation:
+    intro-fade 0.45s var(--ease-out-soft) forwards,
+    enter-pulse 2.4s ease-in-out 0.5s infinite;
+}
+
+.intro-enter.is-ready .intro-enter-dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent);
+  animation: enter-blink 1.4s steps(1) infinite;
+}
+
+.intro-enter.is-ready:hover {
+  color: #fff;
+  border-color: var(--color-accent);
+  background: rgba(53, 226, 255, 0.2);
+  box-shadow: 0 0 26px rgba(53, 226, 255, 0.42);
+}
+
+.intro-enter:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+@keyframes enter-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(53, 226, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(53, 226, 255, 0.32);
+  }
+}
+
+@keyframes enter-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.18;
+  }
 }
 
 .intro-corner {
@@ -876,7 +1027,7 @@
   .intro-sub,
   .intro-bar,
   .intro-meta,
-  .intro-skip,
+  .intro-enter,
   .intro-corner,
   .intro-rule {
     animation: none !important;

@@ -248,7 +248,7 @@ export function PageHeader({
               {title}
             </h1>
             {lead && (
-              <p className="mt-6 max-w-2xl text-[15px] leading-[1.85] text-ink-soft md:text-base">
+              <p className="serif-accent mt-6 max-w-2xl text-[16px] leading-[1.9] text-ink-soft md:text-[17px]">
                 {lead}
               </p>
             )}

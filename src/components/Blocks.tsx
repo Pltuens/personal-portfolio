@@ -94,7 +94,7 @@ function BlockView({ block }: { block: Block }) {
     case 'quote':
       return (
         <blockquote className="max-w-[60ch] border-l border-line py-1 pl-6">
-          <p className="font-display text-[clamp(1.15rem,2vw,1.45rem)] leading-[1.6] text-ink">
+          <p className="serif-accent text-[clamp(1.2rem,2vw,1.5rem)] leading-[1.7] text-ink">
             {block.text}
           </p>
         </blockquote>

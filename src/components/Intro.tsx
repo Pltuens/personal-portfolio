@@ -1,81 +1,95 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import IntroBackdrop from './IntroBackdrop'
 
 /**
  * 入场欢迎页（启动画面）
  * ------------------------------------------------------------------
- * 只在一次会话里出现一次（sessionStorage 标记），
- * 表现是一条"系统启动"序列：横线展开 → 名字逐字出现 → 进度跑满 → 整体上移淡出。
- * 点击 / 任意键立刻跳过；prefers-reduced-motion 下直接不显示。
+ * 只在一次会话里出现一次（sessionStorage 标记）。
+ * 表现是一条"系统启动"序列：横线展开 → 名字逐字出现 → 进度跑满 → 亮起进入提示。
+ *
+ * **进度跑满后不会自动进入**，必须由用户点击（或按键）才会推开门，
+ * 这样首屏始终有明确的"进入"动作，而不是被动跳转。
+ * prefers-reduced-motion 下不播动画，但同样需要点击。
  * 页脚留了重看入口，通过 window 事件 `pluents:replay-intro` 触发。
  */
 
 export const INTRO_KEY = 'pluents:intro-shown'
-const TOTAL = 2500
-const PROGRESS = 1500
+const PROGRESS = 1400
+const EXIT = 460
 
 export default function Intro({ onDone }: { onDone: () => void }) {
   const [pct, setPct] = useState(0)
   const [label, setLabel] = useState('BOOTING KERNEL')
+  const [ready, setReady] = useState(false)
   const [leaving, setLeaving] = useState(false)
-  const doneRef = useRef(false)
+
+  const canEnterRef = useRef(true)
+  const onDoneRef = useRef(onDone)
+  onDoneRef.current = onDone
+
+  const enter = useCallback(() => {
+    if (!canEnterRef.current) return
+    canEnterRef.current = false
+    setReady(true)
+    setLeaving(true)
+    window.setTimeout(() => {
+      document.body.style.overflow = ''
+      onDoneRef.current()
+    }, EXIT)
+  }, [])
+
+  const enterRef = useRef(enter)
+  enterRef.current = enter
 
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) {
-      onDone()
-      return
-    }
-
     document.body.style.overflow = 'hidden'
+    document.body.classList.add('intro-open')
 
-    const finish = () => {
-      if (doneRef.current) return
-      doneRef.current = true
-      document.body.style.overflow = ''
-      onDone()
-    }
-
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let raf = 0
-    const t0 = performance.now()
-    const tick = (now: number) => {
-      const p = Math.min(1, (now - t0) / PROGRESS)
-      setPct(Math.round(p * 100))
-      if (p > 0.28) setLabel('LOADING CASES')
-      if (p > 0.62) setLabel('CALIBRATING HUD')
-      if (p > 0.92) setLabel('SYSTEM ONLINE')
-      if (p < 1) raf = requestAnimationFrame(tick)
+
+    if (reduce) {
+      setPct(100)
+      setLabel('SYSTEM ONLINE')
+      setReady(true)
+    } else {
+      const t0 = performance.now()
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / PROGRESS)
+        setPct(Math.round(p * 100))
+        if (p > 0.28) setLabel('LOADING CASES')
+        if (p > 0.62) setLabel('CALIBRATING HUD')
+        if (p >= 1) {
+          setLabel('SYSTEM ONLINE')
+          setReady(true)
+        }
+        if (p < 1) raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
     }
-    raf = requestAnimationFrame(tick)
 
-    const outAt = window.setTimeout(() => setLeaving(true), TOTAL - 520)
-    const endAt = window.setTimeout(finish, TOTAL)
-
-    const skip = () => {
-      window.clearTimeout(outAt)
-      window.clearTimeout(endAt)
-      setLeaving(true)
-      window.setTimeout(finish, 420)
+    // 键盘兜底：任意键（Tab 除外）等同于点击
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') return
+      enterRef.current()
     }
-
-    window.addEventListener('pointerdown', skip, { once: true })
-    window.addEventListener('keydown', skip, { once: true })
+    window.addEventListener('keydown', onKey)
 
     return () => {
       cancelAnimationFrame(raf)
-      window.clearTimeout(outAt)
-      window.clearTimeout(endAt)
-      window.removeEventListener('pointerdown', skip)
-      window.removeEventListener('keydown', skip)
+      window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
+      document.body.classList.remove('intro-open')
     }
-  }, [onDone])
+  }, [])
 
   return (
     <div
       className={`intro ${leaving ? 'is-out' : ''}`}
-      role="status"
-      aria-label="正在进入作品集"
+      role="dialog"
+      aria-modal="true"
+      aria-label="进入作品集"
+      onClick={enter}
     >
       <div className="intro-aurora" aria-hidden="true" />
       <div className="intro-aurora intro-aurora--2" aria-hidden="true" />
@@ -113,7 +127,15 @@ export default function Intro({ onDone }: { onDone: () => void }) {
           <span className="tabular-nums">{String(pct).padStart(3, '0')}</span>
         </div>
 
-        <p className="intro-skip">点击任意处跳过</p>
+        <button
+          type="button"
+          className={`intro-enter ${ready ? 'is-ready' : ''}`}
+          onClick={enter}
+          aria-label="点击进入作品集"
+        >
+          <i className="intro-enter-dot" aria-hidden="true" />
+          <span>{ready ? '点击进入' : '载入中'}</span>
+        </button>
       </div>
     </div>
   )

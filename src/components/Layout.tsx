@@ -176,7 +176,7 @@ function Footer() {
             <p className="mt-2 text-[13px] text-muted">
               {profile.role} · {profile.seeking}
             </p>
-            <p className="mt-6 max-w-sm font-display text-[15px] leading-relaxed text-ink-soft">
+            <p className="serif-accent mt-6 max-w-sm text-[17px] leading-relaxed text-ink-soft">
               「{profile.tagline}」
             </p>
           </div>

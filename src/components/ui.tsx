@@ -220,16 +220,27 @@ export function PageHeader({
   title,
   lead,
   right,
+  index,
 }: {
   eyebrow: string
   title: ReactNode
   lead?: string
   right?: ReactNode
+  /** 右上角的巨型描边编号，纯装饰 */
+  index?: string
 }) {
   return (
-    <header className="relative border-b border-line pt-14 pb-10 md:pt-20 md:pb-14">
+    <header className="relative overflow-hidden border-b border-line pt-14 pb-6 md:pt-20 md:pb-8">
       <span className="tech-line absolute inset-x-0 top-0" />
-      <div className="container-page">
+      {index && (
+        <span
+          aria-hidden="true"
+          className="watermark pointer-events-none absolute -top-4 right-2 hidden text-[clamp(7rem,15vw,13rem)] md:block"
+        >
+          {index}
+        </span>
+      )}
+      <div className="container-page relative">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="max-w-4xl">
             <Label>{eyebrow}</Label>
@@ -244,6 +255,7 @@ export function PageHeader({
           </div>
           {right}
         </div>
+        <div className="ruler mt-8" />
       </div>
     </header>
   )

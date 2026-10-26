@@ -63,11 +63,11 @@ personal-portfolio/
 
 | 路由 | 页面 | 说明 |
 | --- | --- | --- |
-| `/` | 首页 | 定位、精选案例、能力、联系入口 |
+| `/` | 首页 | HUD 首屏、知识链路球、精选案例、能力、联系入口 |
 | `/works` | 作品列表 | 按类型筛选 |
 | `/works/:slug` | 案例详情 | 侧边目录 + 站内视频 + 分章节内容 + 沉淀 |
-| `/about` | 关于 | 工作方法、能力、知识链路球、经历、工具链 |
-| `/contact` | 联系 | 邮箱 / GitHub / 简历 / 可提供材料 |
+| `/about` | 关于 | 工作方法、能力、个人支点、经历、工具链 |
+| `/contact` | 联系 | 邮箱 / GitHub / 简历下载 / 可提供材料 |
 | `*` | 404 | 兜底页 |
 
 ## 内容维护
@@ -82,7 +82,8 @@ personal-portfolio/
 - `lead`：首页导语，也用于关于页开头。
 - `facts`：首页档案条的 4 个格子。
 - `contact`：`email` 留空时页面显示「待填写」，不会生成虚假邮箱；
-  `resume` 填 `/files/resume.pdf` 之类的路径（文件放 `public/files/`）即可出现下载入口。
+  `resume` 填 `/files/resume.pdf`（文件放 `public/files/`）即可出现下载入口；
+  当前已接入 `public/files/resume.pdf`，联系页显示「下载」。
 - `skillGroups` / `pivots` / `timeline`：能力分组、个人支点、经历时间线。
   `timeline` 为空数组时，关于页显示空状态而不是编造经历。
 
@@ -134,7 +135,7 @@ video: {
 
 ### 4. 知识链路球 — `src/data/knowledge.ts`
 
-关于页的 3D 球由 `nodes`（球面节点）+ `links`（连线）驱动：
+首页「知识链路」区的 3D 球由 `nodes`（球面节点）+ `links`（连线）驱动：
 
 - 节点按斐波那契分布自动铺满球面，无需手动写坐标。
 - `group` 决定颜色（玩法 / 战斗 / 数值 / 工程 / 方法，图例自动生成）。
@@ -157,17 +158,19 @@ video: {
 - 封面全部是手写 SVG 结构示意图，不用 AI 生图或他人素材，避免版权与失真问题。
 - 特效层：滚动 ticker、扫描线、故障色散、HUD 取景角标、鼠标跟随冷光、3D 知识球；
   全部由 CSS/canvas 手写，无第三方库，并统一响应 `prefers-reduced-motion`（关闭自转与循环动画）。
+- 仪表元素：顶部实时时钟、滚动进度条、准星光标（仅精确指针设备）、刻度量尺、巨型描边编号水印，
+  统一由 `components/Chrome.tsx` 与 `index.css` 里的 `.ruler` / `.watermark` / `.crosshair` 提供。
 - 正文最小字号 11px（等宽标签），正文段落 13.5–15px；低对比文字不出现在可读区域。
 - 动效只有两处：入场淡入（IntersectionObserver，仅触发一次）与链接下划线的位移，
   并完整响应 `prefers-reduced-motion`。
 
 ## 部署到 Cloudflare Pages
 
-**线上地址：https://personal-portfolio-34b.pages.dev**
+**线上地址：https://pluents.pages.dev**（旧地址 `personal-portfolio-34b.pages.dev` 已 301 跳转）
 
 | 配置项 | 值 |
 | --- | --- |
-| Cloudflare 项目名 | `personal-portfolio` |
+| Cloudflare 项目名 | `pluents` |
 | 生产分支 | `master` |
 | 框架预设 | Vite |
 | 构建命令 | `npm run build` |
@@ -180,12 +183,12 @@ video: {
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name personal-portfolio --branch master
+npx wrangler pages deploy dist --project-name pluents --branch master
 ```
 
 首次使用需要 `npx wrangler login`（会打开浏览器授权，一次即可）。
-部署成功后输出形如 `https://<hash>.personal-portfolio-34b.pages.dev` 的预览链接，
-`https://personal-portfolio-34b.pages.dev` 始终指向最新一次生产部署。
+部署成功后输出形如 `https://<hash>.pluents.pages.dev` 的预览链接，
+`https://pluents.pages.dev` 始终指向最新一次生产部署。
 
 ### 可选：改成推送即自动发布
 

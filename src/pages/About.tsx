@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import KnowledgeSphere from '../components/KnowledgeSphere'
 import { Arrow, Label, PageHeader, Reveal, SectionHeading, useMeta } from '../components/ui'
 import { contact, pivots, profile, skillGroups, timeline } from '../data/profile'
 
@@ -36,6 +35,7 @@ export default function About() {
     <>
       <PageHeader
         eyebrow="About"
+        index="02"
         title={
           <>
             先想清楚判定，
@@ -132,19 +132,6 @@ export default function About() {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* 知识链路球 */}
-      <section className="container-page pb-16">
-        <SectionHeading eyebrow="Knowledge" title="知识链路" />
-        <p className="mb-8 max-w-[62ch] text-[13.5px] leading-[1.9] text-muted">
-          这些点是我现在真正能用上的东西，连线表示它们在实际项目里怎么互相支撑：
-          拆解得到的判断会落到数值与系统，数值又要靠战斗框架兑现，最后都回到玩法本身。
-          拖一下可以看到背后的部分。
-        </p>
-        <Reveal>
-          <KnowledgeSphere />
-        </Reveal>
       </section>
 
       {/* 经历 */}

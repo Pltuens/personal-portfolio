@@ -9,10 +9,10 @@ export const profile = {
   /** 显示名 */
   nameEn: 'Pluents',
   /** 中文名，未提供则留空 */
-  nameCn: '',
+  nameCn: '潘旺坤',
   role: '玩法 / 系统 / 战斗策划',
   /** 求职状态 */
-  seeking: '2028 届 · 开放机会',
+  seeking: '2028 届 · 寻策划实习',
   tagline: '拆得开，也做得出来。',
   location: '',
   /** 首页大标题，\n 手动换行 */
@@ -34,8 +34,8 @@ export const contact = {
   githubLabel: 'github.com/Pltuens',
   links: [] as { label: string; href: string }[],
   /** 简历：把 PDF 放进 public/files/ 后填路径，例如 '/files/resume.pdf' */
-  resume: '',
-  note: '仅公开求职用途的联系方式，不放置私人电话与住址。',
+  resume: '/files/resume.pdf',
+  note: '简历为 PDF 版，可直接下载；站内不放私人电话。',
 }
 
 export type SkillGroup = {

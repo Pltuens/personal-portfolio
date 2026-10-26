@@ -128,6 +128,17 @@
   color: var(--color-muted);
 }
 
+@utility display-hero {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.2rem, 5.4vw, 4.4rem);
+  /* 中文字形上下本来就顶着 em 框，行高低于 1.05 会串行 */
+  line-height: 1.08;
+  letter-spacing: -0.042em;
+  color: #f4f9fd;
+  text-shadow: 0 0 64px rgba(53, 226, 255, 0.28);
+}
+
 @utility display-xl {
   font-family: var(--font-display);
   font-weight: 600;
@@ -404,6 +415,7 @@
 
 /* 卡片悬停：边框亮起来 + 冷光投影 */
 .tech-card {
+  position: relative;
   transition:
     border-color 0.35s var(--ease-out-soft),
     box-shadow 0.35s var(--ease-out-soft),
@@ -415,6 +427,151 @@
   box-shadow:
     0 0 0 1px rgba(53, 226, 255, 0.08),
     0 24px 70px -46px rgba(53, 226, 255, 0.55);
+}
+
+/* 悬停时一道高光从左扫到右 */
+.tech-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    rgba(53, 226, 255, 0.09) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.tech-card:hover::after {
+  animation: card-sweep 0.9s var(--ease-out-soft) forwards;
+}
+
+@keyframes card-sweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------ 仪表元素 */
+
+/* 刻度尺：首屏/区块之间的分隔，纯装饰 */
+.ruler {
+  height: 8px;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(53, 226, 255, 0.5) 0 1px,
+    transparent 1px 8px
+  );
+  background-position: 0 100%;
+  background-size: 100% 4px;
+  background-repeat: repeat-x;
+  opacity: 0.55;
+}
+
+.ruler-lg {
+  height: 10px;
+  background-size: 100% 10px;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(53, 226, 255, 0.75) 0 1px,
+    transparent 1px 8px
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0 42%,
+    rgba(0, 0, 0, 0.45) 72%,
+    transparent 96%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0 42%,
+    rgba(0, 0, 0, 0.45) 72%,
+    transparent 96%
+  );
+  opacity: 0.75;
+}
+
+/* 竖排索引：左侧编号导轨 */
+.rail {
+  position: relative;
+  padding-left: 14px;
+}
+
+.rail::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(53, 226, 255, 0.6),
+    rgba(53, 226, 255, 0.06)
+  );
+}
+
+/* 巨型描边水印字 */
+.watermark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.78;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(53, 226, 255, 0.16);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* 点阵背景，用于状态面板 */
+.dotgrid {
+  background-image: radial-gradient(rgba(53, 226, 255, 0.16) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+/* 准星光标：只在精确指针设备上启用 */
+.crosshair {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  will-change: transform;
+  display: none;
+}
+
+@media (pointer: fine) {
+  .crosshair {
+    display: block;
+  }
+  body.has-crosshair,
+  body.has-crosshair a,
+  body.has-crosshair button {
+    cursor: none;
+  }
+}
+
+/* 滚动进度条 */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  z-index: 60;
+  background: linear-gradient(90deg, rgba(53, 226, 255, 0.9), rgba(167, 139, 250, 0.9));
+  box-shadow: 0 0 12px rgba(53, 226, 255, 0.6);
+  transform-origin: left;
 }
 
 /* 路由切换淡入 */

@@ -59,10 +59,34 @@ export default function KnowledgeSphere() {
     let raf = 0
     let last = performance.now()
 
-    let rx = 0.26
-    let ry = -0.5
-    let spinY = 0
-    let spinX = 0
+    // 跟踪球：维护一个累积旋转矩阵，每次拖拽都绕"屏幕轴"左乘。
+    // 这样无论球转到什么姿态，位移和球的移动方向永远一致，也不会在极点卡住。
+    type Mat3 = [number, number, number, number, number, number, number, number, number]
+    const mul = (a: Mat3, b: Mat3): Mat3 => [
+      a[0] * b[0] + a[1] * b[3] + a[2] * b[6],
+      a[0] * b[1] + a[1] * b[4] + a[2] * b[7],
+      a[0] * b[2] + a[1] * b[5] + a[2] * b[8],
+      a[3] * b[0] + a[4] * b[3] + a[5] * b[6],
+      a[3] * b[1] + a[4] * b[4] + a[5] * b[7],
+      a[3] * b[2] + a[4] * b[5] + a[5] * b[8],
+      a[6] * b[0] + a[7] * b[3] + a[8] * b[6],
+      a[6] * b[1] + a[7] * b[4] + a[8] * b[7],
+      a[6] * b[2] + a[7] * b[5] + a[8] * b[8],
+    ]
+    const rotX = (t: number): Mat3 => {
+      const c = Math.cos(t)
+      const s = Math.sin(t)
+      return [1, 0, 0, 0, c, -s, 0, s, c]
+    }
+    const rotY = (t: number): Mat3 => {
+      const c = Math.cos(t)
+      const s = Math.sin(t)
+      return [c, 0, s, 0, 1, 0, -s, 0, c]
+    }
+
+    let M: Mat3 = mul(rotX(-0.24), rotY(-0.5))
+    let velX = 0 // 绕屏幕 X 轴角速度（上下）
+    let velY = 0 // 绕屏幕 Y 轴角速度（左右）
 
     const drag = { active: false, x: 0, y: 0 }
     const projected: Proj[] = spherePoints.map(() => ({ x: 0, y: 0, z: 0, s: 1 }))
@@ -83,16 +107,11 @@ export default function KnowledgeSphere() {
 
     const FOV = 3.1
     const project = (p: Vec3): Proj => {
-      const cy1 = Math.cos(ry)
-      const sy1 = Math.sin(ry)
-      const x1 = p.x * cy1 + p.z * sy1
-      const z1 = -p.x * sy1 + p.z * cy1
-      const cx1 = Math.cos(rx)
-      const sx1 = Math.sin(rx)
-      const y1 = p.y * cx1 - z1 * sx1
-      const z2 = p.y * sx1 + z1 * cx1
-      const s = FOV / (FOV - z2)
-      return { x: cx + x1 * R * s, y: cyc + y1 * R * s, z: z2, s }
+      const x1 = M[0] * p.x + M[1] * p.y + M[2] * p.z
+      const y1 = M[3] * p.x + M[4] * p.y + M[5] * p.z
+      const z1 = M[6] * p.x + M[7] * p.y + M[8] * p.z
+      const s = FOV / (FOV - z1)
+      return { x: cx + x1 * R * s, y: cyc + y1 * R * s, z: z1, s }
     }
 
     // 逐段判断前后，背面的经纬线自然变淡，球才有厚度
@@ -296,12 +315,15 @@ export default function KnowledgeSphere() {
       last = now
 
       if (!drag.active) {
-        ry += spinY
-        rx += spinX
-        spinY *= 0.94
-        spinX *= 0.94
-        if (!reduce) ry += dt * 0.00016
-        rx = Math.max(-1.15, Math.min(1.15, rx))
+        if (velX || velY) {
+          M = mul(mul(rotX(velX), rotY(velY)), M)
+          velX *= 0.9
+          velY *= 0.9
+          if (Math.abs(velX) < 2e-5) velX = 0
+          if (Math.abs(velY) < 2e-5) velY = 0
+        }
+        // 自转始终绕屏幕竖直轴，视觉上就是地球仪在原地转
+        if (!reduce) M = mul(rotY(dt * 0.00016), M)
       }
 
       draw()
@@ -332,8 +354,8 @@ export default function KnowledgeSphere() {
       drag.active = true
       drag.x = e.clientX
       drag.y = e.clientY
-      spinY = 0
-      spinX = 0
+      velX = 0
+      velY = 0
       canvas.setPointerCapture(e.pointerId)
       canvas.style.cursor = 'grabbing'
     }
@@ -345,10 +367,13 @@ export default function KnowledgeSphere() {
         const dy = e.clientY - drag.y
         drag.x = e.clientX
         drag.y = e.clientY
-        ry += dx * 0.0075
-        rx = Math.max(-1.15, Math.min(1.15, rx + dy * 0.0075))
-        spinY = dx * 0.0022
-        spinX = dy * 0.0022
+        // 向右拖 → 前表面跟着向右；向下拖 → 前表面跟着向下
+        const K = 0.0075
+        M = mul(mul(rotX(-dy * K), rotY(dx * K)), M)
+        // 松手后的惯性，用最后一段位移估速度，掐掉过猛的甩动
+        const cap = 0.06
+        velX = Math.max(-cap, Math.min(cap, -dy * K * 0.2))
+        velY = Math.max(-cap, Math.min(cap, dx * K * 0.2))
         return
       }
       const hit = pick(x, y)
@@ -359,8 +384,9 @@ export default function KnowledgeSphere() {
       }
     }
 
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
       drag.active = false
+      if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId)
       canvas.style.cursor = 'grab'
     }
 
@@ -424,7 +450,7 @@ export default function KnowledgeSphere() {
       </div>
 
       {/* 侧栏：图例 + 悬停读数 */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5 lg:h-full lg:justify-between">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Legend</p>
           <ul className="mt-3 space-y-2">

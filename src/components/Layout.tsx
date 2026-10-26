@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { contact, profile } from '../data/profile'
+import { Cursor, ScrollProgress } from './Chrome'
 import { Arrow, Label } from './ui'
 
 const NAV = [
@@ -22,6 +23,8 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <ScrollProgress />
+      <Cursor />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
@@ -36,9 +39,11 @@ export default function Layout() {
             <span className="font-display text-[19px] tracking-tight">
               {profile.nameEn}
             </span>
-            <span className="hidden font-mono text-[11px] tracking-[0.18em] text-muted sm:inline">
-              PORTFOLIO
-            </span>
+            {profile.nameCn && (
+              <span className="font-display text-[13.5px] tracking-normal text-ink-soft">
+                {profile.nameCn}
+              </span>
+            )}
             <span className="ml-1 hidden items-center gap-1.5 lg:flex">
               <span className="h-1 w-1 animate-pulse rounded-full bg-accent" />
               <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
@@ -162,6 +167,9 @@ function Footer() {
           <div>
             <p className="font-display text-[clamp(1.6rem,3vw,2.2rem)] leading-tight">
               {profile.nameEn}
+              {profile.nameCn && (
+                <span className="ml-3 text-[0.62em] text-ink-soft">{profile.nameCn}</span>
+              )}
             </p>
             <p className="mt-2 text-[13px] text-muted">
               {profile.role} · {profile.seeking}

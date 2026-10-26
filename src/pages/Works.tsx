@@ -20,6 +20,7 @@ export default function Works() {
     <>
       <PageHeader
         eyebrow="Works — 03 Projects"
+        index="01"
         title={
           <>
             拆过系统，

@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import KnowledgeSphere from '../components/KnowledgeSphere'
 import { ProjectArt } from '../components/ProjectArt'
 import {
   Arrow,
@@ -23,30 +25,84 @@ export default function Home() {
   const featured = projects[0]
   const rest = projects.slice(1)
 
+  // 实时时钟：首屏状态条上的"在运行"感
+  const [clock, setClock] = useState('--:--:--')
+  useEffect(() => {
+    const pad = (n: number) => String(n).padStart(2, '0')
+    const tick = () => {
+      const d = new Date()
+      setClock(
+        `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`,
+      )
+    }
+    tick()
+    const id = window.setInterval(tick, 1000)
+    return () => window.clearInterval(id)
+  }, [])
+
   return (
     <>
       {/* ------------------------------------------------------------ 首屏 */}
-      <section className="border-b border-line">
-        <div className="container-page grid gap-10 pt-12 pb-14 md:grid-cols-12 md:gap-8 md:pt-20 md:pb-20">
-          <div className="md:col-span-8">
+      <section id="top" className="relative border-b border-line">
+        {/* 状态条 */}
+        <div className="border-b border-line-soft">
+          <div className="container-page flex h-10 items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.16em]">
+            <span className="flex items-center gap-2 text-accent/85">
+              <span className="h-[5px] w-[5px] animate-pulse bg-accent" />
+              portfolio os / v2.6
+            </span>
+            <span className="hidden text-muted sm:block">{clock} CST</span>
+            <span className="flex items-center gap-2 text-muted">
+              <span className="hidden sm:inline">system online</span>
+              <span className="text-accent">●</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="container-page grid gap-12 pt-10 pb-14 md:grid-cols-12 md:gap-8 md:pt-16 md:pb-16">
+          {/* 左：索引导轨 */}
+          <nav className="hidden md:col-span-2 md:block" aria-label="页面索引">
+            <ol className="rail space-y-4">
+              {[
+                { n: '01', label: '身份', href: '#top' },
+                { n: '02', label: '知识', href: '#knowledge' },
+                { n: '03', label: '作品', href: '#works' },
+                { n: '04', label: '能力', href: '#capability' },
+                { n: '05', label: '联系', href: '#contact' },
+              ].map((it) => (
+                <li key={it.n}>
+                  <a
+                    href={it.href}
+                    className="group flex items-baseline gap-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-accent"
+                  >
+                    <span className="text-accent/60 group-hover:text-accent">{it.n}</span>
+                    <span className="font-sans text-[12px] normal-case tracking-normal">
+                      {it.label}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+
+          {/* 中：标题 */}
+          <div className="md:col-span-7">
             <div className="flex items-center gap-3">
               <Label>Game Design Portfolio</Label>
               <span className="font-mono text-[11px] text-accent/55">/</span>
-              <span className="font-mono text-[11px] tracking-[0.16em] text-muted">
-                2026
-              </span>
+              <span className="font-mono text-[11px] tracking-[0.16em] text-muted">2026</span>
             </div>
-            <h1 className="display-xl mt-6">
+            <h1 className="display-hero mt-5">
               {profile.headline.split('\n').map((line) => (
                 <span key={line} className="block">
                   <Glitch text={line} />
                 </span>
               ))}
             </h1>
-          </div>
-          <div className="flex flex-col justify-end gap-7 md:col-span-4 md:border-l md:border-line md:pl-8">
-            <p className="text-[14.5px] leading-[1.95] text-ink-soft">{profile.lead}</p>
-            <div className="flex flex-wrap gap-3">
+            <p className="mt-7 max-w-[46ch] text-[14.5px] leading-[1.95] text-ink-soft">
+              {profile.lead}
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/works"
                 className="group inline-flex items-center gap-2 border border-accent bg-accent px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[#04121a] transition-colors hover:bg-transparent hover:text-accent"
@@ -62,17 +118,48 @@ export default function Home() {
               </a>
             </div>
           </div>
+
+          {/* 右：状态面板 */}
+          <aside className="md:col-span-3">
+            <div className="dotgrid border border-line bg-surface/30">
+              <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent/80">
+                  Status
+                </span>
+                <span className="font-mono text-[11px] text-muted">
+                  {String(profile.facts.length).padStart(2, '0')}
+                </span>
+              </div>
+              <dl className="divide-y divide-line-soft">
+                {profile.facts.map((f) => (
+                  <div
+                    key={f.label}
+                    className="flex items-baseline justify-between gap-3 px-4 py-3"
+                  >
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+                      {f.label}
+                    </dt>
+                    <dd className="text-right text-[12.5px] leading-snug text-ink">{f.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="flex items-center justify-between gap-3 border-t border-line px-4 py-3">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+                  Email
+                </span>
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="link-underline font-mono text-[11px] text-accent"
+                >
+                  {contact.email}
+                </a>
+              </div>
+            </div>
+          </aside>
         </div>
 
-        <div className="container-page">
-          <dl className="grid grid-cols-2 gap-px border-t border-line md:grid-cols-4">
-            {profile.facts.map((f) => (
-              <div key={f.label} className="py-5 pr-4">
-                <dt className="label">{f.label}</dt>
-                <dd className="mt-2 text-[13.5px] leading-snug text-ink">{f.value}</dd>
-              </div>
-            ))}
-          </dl>
+        <div className="container-page pb-5">
+          <div className="ruler-lg" />
         </div>
       </section>
 
@@ -89,8 +176,20 @@ export default function Home() {
         ]}
       />
 
+      {/* ------------------------------------------------------------ 知识链路 */}
+      <section id="knowledge" className="container-page scroll-mt-20 pt-16 md:pt-20">
+        <SectionHeading eyebrow="Knowledge" title="我掌握的东西，连起来长这样" />
+        <p className="mb-8 max-w-[64ch] text-[13.5px] leading-[1.9] text-muted">
+          球面上的点是我现在真正能用上的知识块，连线表示它们在实际项目里怎么互相支撑：
+          拆解得到的判断会落到数值与系统，数值要靠战斗框架兑现，最后都回到玩法本身。拖一下，能看到背后的部分。
+        </p>
+        <Reveal>
+          <KnowledgeSphere />
+        </Reveal>
+      </section>
+
       {/* ------------------------------------------------------------ 作品 */}
-      <section className="container-page py-16 md:py-20">
+      <section id="works" className="container-page scroll-mt-20 py-16 md:py-20">
         <SectionHeading
           eyebrow="Selected"
           title="精选作品"
@@ -176,7 +275,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------------------ 能力 */}
-      <section className="border-y border-line bg-surface/60">
+      <section id="capability" className="scroll-mt-20 border-y border-line bg-surface/60">
         <div className="container-page py-16 md:py-20">
           <SectionHeading eyebrow="Capability" title="我能交付什么" />
           <div className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
@@ -205,7 +304,7 @@ export default function Home() {
       </section>
 
       {/* ------------------------------------------------------------ 联系 */}
-      <section className="container-page py-16 md:py-20">
+      <section id="contact" className="container-page scroll-mt-20 py-16 md:py-20">
         <Spotlight className="scan overflow-hidden px-6 py-12 md:px-12 md:py-16">
           <div className="relative z-10 grid gap-8 md:grid-cols-[1.35fr_1fr] md:items-end">
             <div>

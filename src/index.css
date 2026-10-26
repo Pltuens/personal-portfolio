@@ -843,13 +843,60 @@ body.intro-open .crosshair {
   animation-delay: calc(var(--i) * 55ms + 260ms);
 }
 
-.intro-sub {
-  margin-top: 1.1rem;
+/* 副标题位：进度跑满前是身份，跑满后换成一句问候。
+ * 两层叠在同一格里做交叉淡入淡出，容器负责入场动画，
+ * 避免子元素自己的 animation 盖住 transition。 */
+.intro-sub-wrap {
+  position: relative;
+  margin-top: 1.25rem;
+  height: 1.7em;
+  opacity: 0;
+  animation: intro-fade 0.7s var(--ease-out-soft) 0.85s forwards;
+}
+
+.intro-role,
+.intro-greet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: 0;
+  transition:
+    opacity 0.55s var(--ease-out-soft),
+    transform 0.55s var(--ease-out-soft);
+}
+
+.intro-role {
   font-size: 14px;
   letter-spacing: 0.16em;
   color: #cfdae6;
+  opacity: 1;
+  transform: none;
+}
+
+.intro-role[data-hidden='true'] {
   opacity: 0;
-  animation: intro-fade 0.7s var(--ease-out-soft) 0.85s forwards;
+  transform: translateY(-9px);
+}
+
+/* 问候句用衬线，机器启动完之后由"人"开口，和前面的 HUD 语汇拉开 */
+.intro-greet {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2.4vw, 1.4rem);
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  color: #eaf8ff;
+  text-shadow: 0 0 26px rgba(53, 226, 255, 0.5);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* 比进度条慢半拍开口：满格之后先静一下，再落到这句问候上 */
+.intro-greet[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.28s;
 }
 
 .intro-bar {
@@ -1001,7 +1048,7 @@ body.intro-open .crosshair {
   .intro,
   .intro-title span,
   .intro-eyebrow,
-  .intro-sub,
+  .intro-sub-wrap,
   .intro-bar,
   .intro-meta,
   .intro-continue,
@@ -1010,6 +1057,12 @@ body.intro-open .crosshair {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* 这两行靠 data 属性切换显隐，禁用过渡即可瞬时换字，不要强拉 opacity */
+  .intro-role,
+  .intro-greet {
+    transition: none;
   }
 }
 

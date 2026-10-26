@@ -116,7 +116,14 @@ export default function Intro({ onDone }: { onDone: () => void }) {
           ))}
         </h1>
 
-        <p className="intro-sub">潘旺坤 · 玩法 / 系统 / 战斗策划</p>
+        <div className="intro-sub-wrap">
+          <p className="intro-role" data-hidden={ready}>
+            潘旺坤 · 玩法 / 系统 / 战斗策划
+          </p>
+          <p className="intro-greet" data-shown={ready}>
+            欢迎你，来访者
+          </p>
+        </div>
 
         <div className="intro-bar">
           <i style={{ width: `${pct}%` }} />

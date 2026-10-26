@@ -595,6 +595,296 @@
   transform-origin: left;
 }
 
+/* ---------------------------------------------------------------- 入场页 */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(150% 105% at 50% -6%, #0c303b 0%, #08222c 34%, #05171f 64%, #040f16 100%),
+    #040f16;
+  transition:
+    opacity 0.55s var(--ease-out-soft),
+    transform 0.55s var(--ease-out-soft);
+}
+
+/* 底部极光：贴地升起，缓慢横向漂移 */
+.intro-aurora {
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  bottom: -4%;
+  height: 74%;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 58% at 18% 100%, rgba(48, 212, 170, 0.52), transparent 66%),
+    radial-gradient(54% 66% at 50% 104%, rgba(78, 230, 184, 0.6), transparent 64%),
+    radial-gradient(44% 56% at 82% 98%, rgba(96, 206, 255, 0.46), transparent 66%),
+    radial-gradient(32% 44% at 36% 90%, rgba(196, 255, 232, 0.28), transparent 68%);
+  filter: blur(44px) saturate(150%);
+  animation: aurora-drift 24s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+/* 高空的稀薄辉光与斜向银河带 */
+.intro-aurora--2 {
+  left: -25%;
+  right: -25%;
+  bottom: auto;
+  top: -18%;
+  height: 74%;
+  background:
+    radial-gradient(46% 54% at 62% 34%, rgba(53, 226, 255, 0.18), transparent 70%),
+    radial-gradient(40% 48% at 28% 48%, rgba(120, 200, 255, 0.14), transparent 70%),
+    radial-gradient(34% 40% at 78% 74%, rgba(120, 255, 214, 0.12), transparent 72%);
+  filter: blur(62px) saturate(120%);
+  animation: aurora-drift-2 19s ease-in-out infinite alternate;
+  opacity: 0.95;
+}
+
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(-3%, 2%, 0) scale(1.04) skewX(-3deg);
+    opacity: 0.85;
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) scale(1.12) skewX(4deg);
+    opacity: 1;
+  }
+}
+
+@keyframes aurora-drift-2 {
+  from {
+    transform: translate3d(5%, 0, 0) scale(1.06);
+    opacity: 0.6;
+  }
+  to {
+    transform: translate3d(-6%, 4%, 0) scale(1.14);
+    opacity: 0.9;
+  }
+}
+
+/* 跃迁闪光 */
+.intro-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 46%,
+    rgba(220, 248, 255, 0.9),
+    rgba(120, 220, 255, 0.35) 28%,
+    transparent 62%
+  );
+  transition: opacity 0.5s ease-out;
+}
+
+.intro-flash.is-on {
+  opacity: 0.55;
+}
+
+.intro.is-out {
+  opacity: 0;
+  transform: translateY(-14px);
+  pointer-events: none;
+}
+
+.intro-inner {
+  width: min(760px, 100%);
+  text-align: center;
+  z-index: 5;
+}
+
+/* 文字后面压一层暗场，星轨不会穿过正文 */
+.intro-inner::before {
+  content: '';
+  position: absolute;
+  inset: -46% -18%;
+  z-index: -1;
+  background: radial-gradient(
+    closest-side,
+    rgba(4, 15, 21, 0.84),
+    rgba(4, 15, 21, 0.5) 58%,
+    transparent 78%
+  );
+  pointer-events: none;
+}
+
+.intro-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(53, 226, 255, 0.85);
+  opacity: 0;
+  animation: intro-fade 0.6s var(--ease-out-soft) 0.05s forwards;
+}
+
+/* 中缝横线：从中心向两侧展开 */
+.intro-rule {
+  display: block;
+  height: 1px;
+  margin: 1.25rem auto 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(53, 226, 255, 0.8),
+    transparent
+  );
+  transform: scaleX(0);
+  animation: intro-rule 0.7s var(--ease-out-soft) 0.15s forwards;
+}
+
+.intro-title {
+  display: flex;
+  justify-content: center;
+  gap: 0.02em;
+  margin-top: 1.5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 11vw, 7rem);
+  line-height: 1;
+  letter-spacing: 0.12em;
+  color: #f4f9fd;
+  text-shadow: 0 0 70px rgba(53, 226, 255, 0.45);
+}
+
+.intro-title span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: intro-char 0.65s var(--ease-out-soft) forwards;
+  animation-delay: calc(var(--i) * 55ms + 260ms);
+}
+
+.intro-sub {
+  margin-top: 1.1rem;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: #cfdae6;
+  opacity: 0;
+  animation: intro-fade 0.7s var(--ease-out-soft) 0.85s forwards;
+}
+
+.intro-bar {
+  position: relative;
+  height: 2px;
+  margin: 2.4rem auto 0;
+  width: min(420px, 72%);
+  background: rgba(53, 226, 255, 0.14);
+  overflow: hidden;
+  opacity: 0;
+  animation: intro-fade 0.5s var(--ease-out-soft) 0.5s forwards;
+}
+
+.intro-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(53, 226, 255, 0.6), #35e2ff);
+  box-shadow: 0 0 14px rgba(53, 226, 255, 0.8);
+  transition: width 0.08s linear;
+}
+
+.intro-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(420px, 72%);
+  margin: 0.7rem auto 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  opacity: 0;
+  animation: intro-fade 0.5s var(--ease-out-soft) 0.6s forwards;
+}
+
+.intro-meta > span:last-child {
+  color: rgba(53, 226, 255, 0.9);
+}
+
+.intro-skip {
+  margin-top: 3.2rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(116, 129, 143, 0.75);
+  opacity: 0;
+  animation: intro-fade 0.8s var(--ease-out-soft) 1.6s forwards;
+}
+
+.intro-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: rgba(53, 226, 255, 0.5);
+  border-style: solid;
+  opacity: 0;
+  animation: intro-fade 0.9s var(--ease-out-soft) 0.9s forwards;
+}
+
+.intro-corner--tl {
+  top: 22px;
+  left: 22px;
+  border-width: 1px 0 0 1px;
+}
+.intro-corner--tr {
+  top: 22px;
+  right: 22px;
+  border-width: 1px 1px 0 0;
+}
+.intro-corner--bl {
+  bottom: 22px;
+  left: 22px;
+  border-width: 0 0 1px 1px;
+}
+.intro-corner--br {
+  bottom: 22px;
+  right: 22px;
+  border-width: 0 1px 1px 0;
+}
+
+@keyframes intro-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-char {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intro-rule {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .intro-title span,
+  .intro-eyebrow,
+  .intro-sub,
+  .intro-bar,
+  .intro-meta,
+  .intro-skip,
+  .intro-corner,
+  .intro-rule {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* 路由切换淡入 */
 @keyframes page-in {
   from {

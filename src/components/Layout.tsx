@@ -226,7 +226,23 @@ function Footer() {
           <span className="normal-case tracking-normal">
             作品文档与演示视频按需提供，未公开内部资料
           </span>
-          <span>UE5 · GAS · React</span>
+          <span className="flex items-center gap-4">
+            <span>UE5 · GAS · React</span>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  sessionStorage.removeItem('pluents:intro-shown')
+                } catch {
+                  /* 忽略 */
+                }
+                window.dispatchEvent(new CustomEvent('pluents:replay-intro'))
+              }}
+              className="border border-line px-2 py-1 transition-colors hover:border-accent/50 hover:text-accent"
+            >
+              重看开场
+            </button>
+          </span>
         </div>
       </div>
     </footer>

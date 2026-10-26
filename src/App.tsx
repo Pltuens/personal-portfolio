@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import Intro, { INTRO_KEY } from './components/Intro'
 import Layout from './components/Layout'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -27,8 +28,33 @@ function ScrollManager() {
 }
 
 export default function App() {
+  // 一次会话只放一次入场页；页脚的重看入口会重新挂载它
+  const [showIntro, setShowIntro] = useState(() => {
+    try {
+      return !sessionStorage.getItem(INTRO_KEY)
+    } catch {
+      return true
+    }
+  })
+
+  const finishIntro = useCallback(() => {
+    try {
+      sessionStorage.setItem(INTRO_KEY, '1')
+    } catch {
+      /* 隐私模式下不可用，忽略 */
+    }
+    setShowIntro(false)
+  }, [])
+
+  useEffect(() => {
+    const replay = () => setShowIntro(true)
+    window.addEventListener('pluents:replay-intro', replay)
+    return () => window.removeEventListener('pluents:replay-intro', replay)
+  }, [])
+
   return (
     <BrowserRouter>
+      {showIntro && <Intro onDone={finishIntro} />}
       <ScrollManager />
       <Routes>
         <Route element={<Layout />}>

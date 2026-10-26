@@ -78,13 +78,13 @@ export default function Works() {
                 {/* 大编号 */}
                 <span
                   aria-hidden="true"
-                  className="col-span-1 font-mono text-[clamp(1.6rem,3vw,2.6rem)] leading-none text-accent/50 md:self-start md:pt-1 transition-colors duration-300 group-hover:text-accent"
+                  className="font-mono md:col-span-1 text-[clamp(1.6rem,3vw,2.6rem)] leading-none text-accent/50 md:self-start md:pt-1 transition-colors duration-300 group-hover:text-accent"
                 >
                   {p.index}
                 </span>
 
                 {/* 标题与标签 */}
-                <div className="col-span-7 min-w-0">
+                <div className="min-w-0 md:col-span-7">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
                     <h2 className="display-l transition-colors duration-300 group-hover:text-accent">
                       {p.title}
@@ -105,7 +105,7 @@ export default function Works() {
                 </div>
 
                 {/* 元信息 */}
-                <div className="col-span-4 flex items-end justify-between gap-4 border-t border-line-soft pt-4 md:flex-col md:items-end md:gap-2 md:border-t-0 md:pt-0 md:text-right">
+                <div className="flex items-end md:col-span-4 justify-between gap-4 border-t border-line-soft pt-4 md:flex-col md:items-end md:gap-2 md:border-t-0 md:pt-0 md:text-right">
                   <span className="font-mono text-[11px] tracking-[0.1em] text-muted">{p.kind}</span>
                   <span className="flex items-center gap-3 font-mono text-[11px] tracking-[0.12em] text-muted">
                     {p.period}

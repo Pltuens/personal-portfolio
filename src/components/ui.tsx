@@ -69,19 +69,52 @@ export function Reveal({
 
 /* ------------------------------------------------------------------ 元信息 */
 
-export function useMeta(title: string, description?: string) {
+export const SITE_URL = 'https://pluents.pages.dev'
+
+/** 写一个 meta 标签，不存在就建一个 */
+function setMeta(attr: 'name' | 'property', key: string, value: string) {
+  let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`)
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute(attr, key)
+    document.head.appendChild(el)
+  }
+  el.content = value
+}
+
+/**
+ * 页面标题、描述与分享卡片。
+ * ------------------------------------------------------------------
+ * 注意：这里改的是运行时 DOM，社交平台的爬虫大多不执行 JS。
+ * 真正对外生效的是构建时预渲染出来的静态 HTML（scripts/prerender.mjs），
+ * 这里保证在支持 JS 的客户端（内嵌浏览器、预览面板）里也是对的。
+ */
+export function useMeta(title: string, description?: string, image?: string) {
   useEffect(() => {
     document.title = title
-    if (description) {
-      let el = document.querySelector<HTMLMetaElement>('meta[name="description"]')
-      if (!el) {
-        el = document.createElement('meta')
-        el.name = 'description'
-        document.head.appendChild(el)
-      }
-      el.content = description
+
+    const path = window.location.pathname.replace(/\/+$/, '')
+    const url = SITE_URL + path
+    const img = SITE_URL + (image ?? '/og/default.jpg')
+
+    if (description) setMeta('name', 'description', description)
+    if (description) setMeta('property', 'og:description', description)
+    if (description) setMeta('name', 'twitter:description', description)
+
+    setMeta('property', 'og:title', title)
+    setMeta('property', 'og:url', url)
+    setMeta('property', 'og:image', img)
+    setMeta('name', 'twitter:title', title)
+    setMeta('name', 'twitter:image', img)
+
+    let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'canonical'
+      document.head.appendChild(link)
     }
-  }, [title, description])
+    link.href = url
+  }, [title, description, image])
 }
 
 /* -------------------------------------------------------------------- 原子 */

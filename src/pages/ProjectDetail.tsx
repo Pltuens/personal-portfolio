@@ -13,6 +13,7 @@ export default function ProjectDetail() {
   useMeta(
     project ? `${project.title} — Pan Wangkun` : '案例未找到 — Pan Wangkun',
     project?.summary,
+    project ? `/og/${project.slug}.jpg` : undefined,
   )
 
   if (!project) return <NotFound />

@@ -689,9 +689,6 @@ body.intro-open .crosshair {
   background:
     radial-gradient(150% 105% at 50% -6%, #0c303b 0%, #08222c 34%, #05171f 64%, #040f16 100%),
     #040f16;
-  transition:
-    opacity 0.55s var(--ease-out-soft),
-    transform 0.55s var(--ease-out-soft);
 }
 
 /* 底部极光：贴地升起，缓慢横向漂移 */
@@ -750,35 +747,93 @@ body.intro-open .crosshair {
   }
 }
 
-/* 跃迁闪光 */
+/* 跃迁白光：从中心炸开，最终铺满整个视口
+ * 必须做到完全不透明 —— 它要在入场页卸载的那一帧接住画面，
+ * 哪怕露出一点底层，青绿底到深蓝底的跳变就会被看见。
+ */
 .intro-flash {
   position: absolute;
   inset: 0;
+  z-index: 20;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(
-    circle at 50% 46%,
-    rgba(220, 248, 255, 0.9),
-    rgba(120, 220, 255, 0.35) 28%,
-    transparent 62%
-  );
-  transition: opacity 0.5s ease-out;
+  transform: scale(1.08);
+  background:
+    radial-gradient(circle at 50% 46%, #ffffff 0%, rgba(248, 253, 255, 1) 40%, rgba(226, 245, 252, 1) 74%, rgba(206, 236, 250, 1) 100%);
+  transition:
+    opacity 0.34s cubic-bezier(0.75, 0, 1, 1),
+    transform 0.42s ease-out;
 }
 
 .intro-flash.is-on {
-  opacity: 0.55;
+  opacity: 1;
+  transform: scale(1);
 }
 
-.intro.is-out {
-  opacity: 0;
-  transform: translateY(-14px);
+/* 从入场页交接到主界面用的白光层，由 App 控制挂载与褪去 */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
   pointer-events: none;
+  opacity: 1;
+  background:
+    radial-gradient(circle at 50% 44%, #ffffff 0%, rgba(248, 253, 255, 1) 40%, rgba(228, 246, 252, 1) 76%, rgba(208, 237, 250, 1) 100%);
+  transition: opacity 0.58s linear;
+}
+
+.intro-curtain.is-fading {
+  opacity: 0;
+}
+
+/* 退场时不整体淡出：整体淡出会提前露出底层，
+ * 改成内容被光吞掉（放大 + 虚化 + 淡出），背景留给白光覆盖。
+ */
+.intro.is-out {
+  pointer-events: none;
+}
+
+.intro.is-out .intro-inner {
+  opacity: 0;
+  transform: scale(1.07);
+  filter: blur(12px);
+  transition:
+    opacity 0.36s ease-in,
+    transform 0.5s cubic-bezier(0.4, 0, 1, 1),
+    filter 0.5s ease-in;
 }
 
 .intro-inner {
   width: min(760px, 100%);
   text-align: center;
   z-index: 5;
+  transition:
+    opacity 0.3s var(--ease-out-soft),
+    transform 0.3s var(--ease-out-soft);
+}
+
+/* 白光褪去的同时，首屏内容从略近的位置回落到原位。
+ * 必须挂在 <main> 上，不能挂 .page-enter ——
+ * 那个元素自带 page-in 动画，撤销覆盖会让 page-in 重新播放，内容会闪一下再重进。
+ */
+body.is-revealing #main {
+  animation: shell-reveal 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 白光期间不显示准星光标，否则青色准星会浮在一片白上 */
+body.is-revealing .crosshair {
+  display: none;
+}
+
+@keyframes shell-reveal {
+  from {
+    opacity: 0.45;
+    transform: scale(1.018);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* 文字后面压一层暗场，星轨不会穿过正文 */
@@ -1063,6 +1118,24 @@ body.intro-open .crosshair {
   .intro-role,
   .intro-greet {
     transition: none;
+  }
+
+  /* 减少动效时不要缩放和虚化，只留一次短促的白光换场 */
+  .intro.is-out .intro-inner {
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 0.2s linear !important;
+  }
+
+  .intro-flash,
+  .intro-curtain {
+    transform: none !important;
+    transition: opacity 0.22s linear !important;
+  }
+
+  /* 不要让首屏内容在减少动效模式下缩放 */
+  body.is-revealing #main {
+    animation: none !important;
   }
 }
 

@@ -15,7 +15,8 @@ import IntroBackdrop from './IntroBackdrop'
 
 export const INTRO_KEY = 'pluents:intro-shown'
 const PROGRESS = 1400
-const EXIT = 460
+/** 白光铺满整个画面所需时间；到点后才卸载，避免露出还没被盖住的底层 */
+const EXIT = 420
 
 export default function Intro({ onDone }: { onDone: () => void }) {
   const [pct, setPct] = useState(0)

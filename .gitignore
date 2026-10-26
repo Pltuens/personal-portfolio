@@ -26,3 +26,7 @@ dist-ssr
 # 本地自检脚本与截图（不发布）
 _shots/
 _*.mjs
+
+# 本地临时截图
+_*.png
+_audit.json

@@ -2,10 +2,10 @@ import { Arrow, Label, PageHeader, useMeta } from '../components/ui'
 import { contact, profile } from '../data/profile'
 
 const canShare = [
-  '策划案的结构摘要与关键页截图',
-  '可玩原型 / Demo 录屏',
-  '配表样例与校验规则说明',
-  '机制拆解长文原稿',
+  '《鸣潮》声骸系统拆解案（飞书文档）',
+  'Aura / Slash 原型演示视频',
+  'GAS 战斗框架与状态机结构说明',
+  '拆解案里的数值观察表',
 ]
 
 export default function Contact() {
@@ -22,7 +22,7 @@ export default function Contact() {
             就直接说。
           </>
         }
-        lead="找实习、校招内推、或者只是想聊聊某个机制怎么设计，都可以联系。作品里的细节如果需要展开，我可以补材料。"
+        lead="2028 届，找玩法 / 系统 / 战斗策划的实习与校招机会。看作品、要完整拆解文档或演示视频、聊某个战斗机制怎么搭，都可以直接联系。"
       />
 
       <section className="container-page py-12 md:py-16">

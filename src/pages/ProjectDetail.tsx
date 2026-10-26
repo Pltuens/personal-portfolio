@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { Blocks } from '../components/Blocks'
-import { ProjectArt } from '../components/ProjectArt'
-import { Arrow, DemoBadge, Label, Reveal, useMeta } from '../components/ui'
+import { HeroArt } from '../components/ProjectArt'
+import { Arrow, Label, Reveal, StatusBadge, useMeta } from '../components/ui'
 import { getProject, nextProject } from '../data/projects'
 import NotFound from './NotFound'
 
@@ -36,7 +36,7 @@ export default function ProjectDetail() {
                 <Label>
                   {project.index} / {project.category}
                 </Label>
-                <DemoBadge>{project.status}</DemoBadge>
+                <StatusBadge>{project.status}</StatusBadge>
               </div>
               <h1 className="display-xl mt-5">{project.title}</h1>
               <p className="mt-5 max-w-[42ch] font-display text-[clamp(1.15rem,2.2vw,1.5rem)] leading-snug text-ink-soft">
@@ -64,12 +64,30 @@ export default function ProjectDetail() {
       </header>
 
       <div className="container-page pt-8">
-        <div className="border border-line bg-surface">
-          <ProjectArt art={project.art} className="h-auto w-full" />
+        <div className="hud-frame scan overflow-hidden border border-line bg-paper-deep">
+          <HeroArt art={project.art} />
         </div>
-        <p className="mt-3 font-mono text-[11.5px] tracking-wide text-muted">
-          图示为原创结构示意，非项目截图
-        </p>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+          <p className="font-mono text-[11.5px] tracking-wide text-muted">
+            图示为原创结构示意，非项目截图
+          </p>
+          {project.links && (
+            <div className="flex flex-wrap gap-2">
+              {project.links.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="group inline-flex items-center gap-2 border border-ink px-3.5 py-2 font-mono text-[10.5px] uppercase tracking-[0.12em] transition-colors hover:bg-ink hover:text-paper"
+                >
+                  {l.label}
+                  <Arrow className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="container-page grid gap-12 pt-12 md:grid-cols-12 md:gap-8 md:pt-16">

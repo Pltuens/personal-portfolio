@@ -1,6 +1,8 @@
 /**
  * 原创封面图形（纯 SVG，无外部素材）
- * 三套构图对应三种玩法类型：分镜格 / 三只杯 / 分层结构。
+ * systemmap — 系统结构拆解
+ * gas       — 战斗状态机
+ * souls     — 魂系推拉循环
  */
 
 import type { ArtKey } from '../data/projects'
@@ -16,12 +18,21 @@ const C = {
   muted: '#6d6858',
 }
 
+const LABEL: Record<ArtKey, string> = {
+  systemmap: '系统结构拆解示意',
+  gas: '战斗状态机示意',
+  souls: '魂系战斗推拉循环示意',
+}
+
 export function ProjectArt({
   art,
   className = '',
+  fit = 'slice',
 }: {
   art: ArtKey
   className?: string
+  /** slice = 裁切铺满（缩略图）；meet = 完整显示（大图与正文图示） */
+  fit?: 'slice' | 'meet'
 }) {
   return (
     <svg
@@ -29,26 +40,20 @@ export function ProjectArt({
       className={className}
       role="img"
       aria-label={LABEL[art]}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={fit === 'meet' ? 'xMidYMid meet' : 'xMidYMid slice'}
     >
       <rect width="1200" height="760" fill={C.deep} />
       <Grid />
-      {art === 'grid' && <GridScene />}
-      {art === 'vessel' && <VesselScene />}
-      {art === 'layer' && <LayerScene />}
+      {art === 'systemmap' && <SystemMap />}
+      {art === 'gas' && <GasStates />}
+      {art === 'souls' && <SoulsLoop />}
     </svg>
   )
 }
 
-const LABEL: Record<ArtKey, string> = {
-  grid: '分镜格与事件传播示意',
-  vessel: '三只杯的水位与刻度示意',
-  layer: '分层结构的堆叠示意',
-}
-
 function Grid() {
   return (
-    <g stroke={C.line} strokeWidth="0.7" opacity="0.55">
+    <g stroke={C.line} strokeWidth="0.7" opacity="0.5">
       {Array.from({ length: 11 }).map((_, i) => (
         <line key={`v${i}`} x1={60 + i * 108} y1="0" x2={60 + i * 108} y2="760" />
       ))}
@@ -59,256 +64,220 @@ function Grid() {
   )
 }
 
-function GridScene() {
-  const frames = [130, 470, 810]
+/* ------------------------------------------------------------ 系统结构拆解 */
+
+function SystemMap() {
+  const nodes = [
+    { x: 300, y: 226, title: 'ACQUIRE', cn: '获取链路', rows: 3 },
+    { x: 300, y: 462, title: 'GROWTH', cn: '养成消耗', rows: 4 },
+    { x: 800, y: 226, title: 'STATS', cn: '词条数值', rows: 3 },
+    { x: 800, y: 462, title: 'BUILD', cn: '战斗构筑', rows: 4 },
+  ]
   return (
     <g>
-      <rect x="90" y="120" width="1020" height="520" fill={C.surface} stroke={C.ink} strokeWidth="1.6" />
-      {frames.map((x, i) => (
-        <g key={x}>
-          <rect x={x} y="180" width="260" height="330" fill="none" stroke={C.ink} strokeWidth="1.2" />
-          <text
-            x={x + 14}
-            y="212"
-            fontFamily="Georgia, serif"
-            fontSize="17"
-            letterSpacing="2"
-            fill={C.muted}
-          >
-            {String(i + 1).padStart(2, '0')}
+      <g>
+        <rect x="510" y="320" width="180" height="120" fill={C.ink} />
+        <text x="600" y="368" textAnchor="middle" fontFamily="Georgia, serif" fontSize="26" fill={C.paper}>
+          ECHO
+        </text>
+        <text x="600" y="392" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="3" fill={C.paper} opacity="0.65">
+          CORE SYSTEM
+        </text>
+        <line x1="546" y1="410" x2="654" y2="410" stroke={C.accent} strokeWidth="2" />
+      </g>
+
+      {nodes.map((n) => (
+        <g key={n.title}>
+          <rect x={n.x} y={n.y} width="240" height="120" fill={C.surface} stroke={C.ink} strokeWidth="1.4" />
+          <text x={n.x + 16} y={n.y + 26} fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="2.5" fill={C.muted}>
+            {n.title}
+          </text>
+          <text x={n.x + 16} y={n.y + 54} fontFamily="Georgia, serif" fontSize="24" fill={C.ink}>
+            {n.cn}
+          </text>
+          {Array.from({ length: n.rows }).map((_, i) => (
+            <line
+              key={i}
+              x1={n.x + 16}
+              y1={n.y + 76 + i * 12}
+              x2={n.x + 16 + (i % 2 === 0 ? 150 : 108)}
+              y2={n.y + 76 + i * 12}
+              stroke={C.line}
+              strokeWidth="3"
+            />
+          ))}
+        </g>
+      ))}
+
+      <g stroke={C.accent} strokeWidth="1.2" fill="none" strokeDasharray="6 5">
+        <path d="M510 360h-30v-74h60" />
+        <path d="M690 360h30v-74h-60" />
+        <path d="M510 400h-30v74h60" />
+        <path d="M690 400h30v74h-60" />
+      </g>
+
+      <text x="120" y="650" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="3" fill={C.muted}>
+        DECOMPOSE · 拆解维度
+      </text>
+    </g>
+  )
+}
+
+/* -------------------------------------------------------------- 状态机 */
+
+function GasStates() {
+  const states = [
+    { x: 120, label: 'IDLE', cn: '待机' },
+    { x: 390, label: 'MOVE', cn: '移动' },
+    { x: 660, label: 'CAST', cn: '施法' },
+    { x: 930, label: 'HIT', cn: '受击' },
+  ]
+  return (
+    <g>
+      <g transform="translate(120,110)">
+        <text fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="2.5" fill={C.muted}>
+          ATTRIBUTE SET
+        </text>
+        {['HEALTH', 'STAMINA', 'POISE'].map((a, i) => (
+          <g key={a} transform={`translate(0,${30 + i * 32})`}>
+            <text fontFamily="ui-monospace, monospace" fontSize="14" fill={C.muted}>
+              {a}
+            </text>
+            <rect x="96" y="-9" width="200" height="8" fill={C.surface} stroke={C.ink} strokeWidth="1" />
+            <rect x="96" y="-9" width={[176, 132, 82][i]} height="8" fill={i === 2 ? C.accent : C.jade} opacity="0.55" />
+          </g>
+        ))}
+      </g>
+
+      <g transform="translate(120,286)">
+        <text fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="2.5" fill={C.muted}>
+          EFFECT STACK
+        </text>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <g key={i} transform={`translate(${i * 44},22)`}>
+            <rect width="32" height="32" fill={C.surface} stroke={C.ink} strokeWidth="1.2" />
+            <line x1="8" y1="16" x2="24" y2="16" stroke={i < 3 ? C.jade : C.accent} strokeWidth="2" />
+            <line x1="16" y1="8" x2="16" y2="24" stroke={i < 3 ? C.jade : C.accent} strokeWidth="2" opacity={i >= 3 ? 1 : 0} />
+          </g>
+        ))}
+      </g>
+
+      {states.map((s) => (
+        <g key={s.label}>
+          <rect x={s.x} y="466" width="180" height="94" fill={C.surface} stroke={C.ink} strokeWidth="1.5" />
+          <text x={s.x + 90} y="508" textAnchor="middle" fontFamily="Georgia, serif" fontSize="26" letterSpacing="1" fill={C.ink}>
+            {s.label}
+          </text>
+          <text x={s.x + 90} y="534" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="15" fill={C.muted}>
+            {s.cn}
           </text>
         </g>
       ))}
 
-      {/* 格 1：两个人 */}
-      <g stroke={C.ink} strokeWidth="1.6" fill="none">
-        <circle cx="215" cy="330" r="20" />
-        <path d="M215 352v58m0-34-26 16m26-16 24 14" />
-        <circle cx="315" cy="336" r="20" />
-        <path d="M315 358v52m0-30-22 14m22-14 20 12" />
-      </g>
-      <line x1="240" y1="392" x2="290" y2="392" stroke={C.jade} strokeWidth="2" />
-      <text x="260" y="424" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="13" fill={C.jade}>
-        关系 +1
-      </text>
-
-      {/* 格 2：单人 + 道具 */}
-      <g stroke={C.ink} strokeWidth="1.6" fill="none">
-        <circle cx="600" cy="334" r="20" />
-        <path d="M600 356v54m0-32-24 12m24-12 22 10" />
-        <path d="M566 430h68l-8 26h-52z" fill={C.accent} stroke={C.accent} />
-      </g>
-
-      {/* 格 3：两人对峙 */}
-      <g stroke={C.ink} strokeWidth="1.6" fill="none">
-        <circle cx="905" cy="330" r="20" />
-        <path d="M905 352v60m0-36 26-16" />
-        <circle cx="985" cy="336" r="20" />
-        <path d="M985 358v54m0-30-22 12" />
-      </g>
-      <path d="M950 318h14" stroke={C.accent} strokeWidth="2.4" />
-
-      {/* 传播箭头 */}
-      {[
-        [392, 345, 466, 345],
-        [732, 345, 806, 345],
-      ].map(([x1, y1, x2, y2]) => (
-        <g key={x1}>
-          <line
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke={C.accent}
-            strokeWidth="1.4"
-            strokeDasharray="7 6"
-          />
-          <path d={`M${x2} ${y2}l-9,-5v10z`} fill={C.accent} />
+      {[300, 570, 840].map((x) => (
+        <g key={x}>
+          <line x1={x} y1="513" x2={x + 88} y2="513" stroke={C.ink} strokeWidth="1.3" />
+          <path d={`M${x + 88} 513l-9,-4v8z`} fill={C.ink} />
         </g>
       ))}
 
-      {/* 终态判定 */}
-      <line x1="130" y1="556" x2="1070" y2="556" stroke={C.line} strokeWidth="1" />
-      <text x="130" y="594" fontFamily="ui-monospace, monospace" fontSize="13" letterSpacing="3" fill={C.muted}>
-        GOAL · 终态匹配
+      <path d="M1020 466V424H300v42" fill="none" stroke={C.accent} strokeWidth="1.3" strokeDasharray="7 5" />
+      <path d="M300 466l-4,-9h8z" fill={C.accent} />
+      <text x="620" y="418" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="2.5" fill={C.accent}>
+        INTERRUPT · 状态打断
       </text>
-      <g transform="translate(880,570)">
-        {[0, 1, 2].map((i) => (
-          <g key={i} transform={`translate(${i * 62},0)`}>
-            <circle cx="14" cy="14" r="11" fill="none" stroke={C.ink} strokeWidth="1.3" />
-            <path d="M9 14l4 4 7-8" stroke={C.ink} strokeWidth="1.6" fill="none" />
-          </g>
-        ))}
+
+      <text x="120" y="650" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="3" fill={C.muted}>
+        STATE MACHINE · 状态优先级
+      </text>
+    </g>
+  )
+}
+
+/* ------------------------------------------------------------ 耐力循环 */
+
+function SoulsLoop() {
+  return (
+    <g>
+      <g transform="translate(600,356)">
+        <g stroke={C.ink} strokeWidth="2" fill="none">
+          <path d="M0 -196 L14 -152 L8 0 L-8 0 L-14 -152 Z" />
+          <line x1="-54" y1="16" x2="54" y2="16" strokeWidth="6" />
+          <line x1="0" y1="16" x2="0" y2="88" strokeWidth="7" />
+          <circle cx="0" cy="98" r="9" fill={C.accent} stroke={C.accent} />
+        </g>
+        <text y="142" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="3" fill={C.muted}>
+          STAMINA LOOP
+        </text>
       </g>
-    </g>
-  )
-}
 
-function VesselScene() {
-  const cups = [
-    { x: 300, cap: 240, level: 0.72, tick: false },
-    { x: 600, cap: 300, level: 0.44, tick: true },
-    { x: 900, cap: 200, level: 0.86, tick: false },
-  ]
-  return (
-    <g>
-      {/* 镜面弧 */}
-      <path
-        d="M140 620C240 330 420 250 600 250s360 80 460 370"
-        fill="none"
-        stroke={C.ink}
-        strokeWidth="1.2"
-        strokeDasharray="10 9"
-        opacity="0.55"
-      />
-      <text x="150" y="668" fontFamily="ui-monospace, monospace" fontSize="12" letterSpacing="3" fill={C.muted}>
-        MIRROR · 镜面伪装
+      <path d="M600 140a216 216 0 0 1 187 108" fill="none" stroke={C.accent} strokeWidth="1.4" strokeDasharray="8 6" />
+      <path d="M787 248l3,-13 10,9z" fill={C.accent} />
+      <text x="700" y="122" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="2.5" fill={C.ink}>
+        ATTACK
       </text>
 
-      {cups.map((c) => {
-        const top = 620 - c.cap
-        const waterTop = 620 - c.cap * c.level
-        return (
-          <g key={c.x}>
-            {/* 杯体 */}
-            <path
-              d={`M${c.x - 66} ${top} L${c.x - 52} 620 H${c.x + 52} L${c.x + 66} ${top} Z`}
-              fill={C.surface}
-              stroke={C.ink}
-              strokeWidth="1.7"
-            />
-            {/* 水 */}
-            <path
-              d={`M${c.x - 63.2} ${waterTop} L${c.x - 52} 620 H${c.x + 52} L${c.x + 63.2} ${waterTop} Z`}
-              fill={C.jade}
-              opacity="0.18"
-            />
-            <line
-              x1={c.x - 63.2}
-              y1={waterTop}
-              x2={c.x + 63.2}
-              y2={waterTop}
-              stroke={C.jade}
-              strokeWidth="2"
-            />
-            {/* 杯脚 */}
-            <path
-              d={`M${c.x} 620v34`}
-              stroke={C.ink}
-              strokeWidth="1.7"
-              fill="none"
-            />
-            <path d={`M${c.x - 46} 656h92`} stroke={C.ink} strokeWidth="1.7" />
-            {/* 刻度 */}
-            {c.tick &&
-              Array.from({ length: 9 }).map((_, i) => {
-                const y = 620 - ((i + 1) * c.cap) / 10
-                const w = (i + 1) % 5 === 0 ? 22 : 12
-                return (
-                  <g key={i}>
-                    <line
-                      x1={c.x + 64 - 6}
-                      y1={y}
-                      x2={c.x + 64 - 6 - w}
-                      y2={y}
-                      stroke={C.ink}
-                      strokeWidth="1"
-                      opacity="0.8"
-                    />
-                  </g>
-                )
-              })}
-            {c.tick && (
-              <text
-                x={c.x + 78}
-                y={waterTop + 5}
-                fontFamily="ui-monospace, monospace"
-                fontSize="14"
-                fill={C.accent}
-              >
-                T
-              </text>
-            )}
-          </g>
-        )
-      })}
-
-      <line x1="120" y1="700" x2="1080" y2="700" stroke={C.line} strokeWidth="1" />
-      <text x="120" y="726" fontFamily="ui-monospace, monospace" fontSize="12" letterSpacing="3" fill={C.muted}>
-        左 · 满 ／ 中 · 空 ／ 右 · 满
+      <path d="M787 464a216 216 0 0 1-187 108" fill="none" stroke={C.accent} strokeWidth="1.4" strokeDasharray="8 6" />
+      <path d="M600 572l13,-4-6,10z" fill={C.accent} />
+      <text x="712" y="602" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="2.5" fill={C.ink}>
+        REPRISE
       </text>
-    </g>
-  )
-}
 
-function LayerScene() {
-  const slabs = [
-    { y: 470, w: 420, label: '01' },
-    { y: 400, w: 360, label: '02' },
-    { y: 330, w: 300, label: '03' },
-    { y: 260, w: 240, label: '04' },
-  ]
-  return (
-    <g>
-      <ellipse cx="600" cy="612" rx="300" ry="46" fill="none" stroke={C.line} strokeDasharray="8 8" />
-      {slabs.map((s, i) => {
-        const x = 600
-        const h = 22
-        const dx = s.w / 2
-        return (
-          <g key={s.label} opacity={0.95 - i * 0.05}>
-            <path
-              d={`M${x - dx} ${s.y} L${x} ${s.y - 34} L${x + dx} ${s.y} L${x} ${s.y + 34} Z`}
-              fill={i % 2 === 0 ? C.surface : C.paper}
-              stroke={C.ink}
-              strokeWidth="1.6"
-            />
-            <path
-              d={`M${x - dx} ${s.y}v${h} L${x} ${s.y + 34 + h} V${s.y + 34} Z`}
-              fill={C.deep}
-              stroke={C.ink}
-              strokeWidth="1.4"
-            />
-            <path
-              d={`M${x + dx} ${s.y}v${h} L${x} ${s.y + 34 + h}`}
-              fill="none"
-              stroke={C.ink}
-              strokeWidth="1.4"
-            />
-            <text
-              x={x}
-              y={s.y}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontFamily="Georgia, serif"
-              fontSize="18"
-              letterSpacing="3"
-              fill={C.muted}
-            >
-              {s.label}
+      <path d="M413 464a216 216 0 0 1 0-216" fill="none" stroke={C.line} strokeWidth="1.2" strokeDasharray="5 7" />
+
+      <g transform="translate(120,300)">
+        <text fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="2.5" fill={C.muted}>
+          STAMINA
+        </text>
+        <rect x="0" y="18" width="120" height="14" fill={C.surface} stroke={C.ink} strokeWidth="1.2" />
+        <rect x="0" y="18" width="78" height="14" fill={C.jade} opacity="0.35" />
+        <rect x="0" y="18" width="30" height="14" fill={C.accent} opacity="0.75" />
+        <text y="54" fontFamily="ui-monospace, monospace" fontSize="14" fill={C.muted}>
+          COST · 刚性卡点
+        </text>
+        <rect x="0" y="72" width="120" height="14" fill="none" stroke={C.line} strokeDasharray="4 4" />
+        <text y="108" fontFamily="ui-monospace, monospace" fontSize="14" fill={C.muted}>
+          REGEN · 自动回复
+        </text>
+      </g>
+
+      <g transform="translate(880,250)" stroke={C.ink} strokeWidth="1.3" fill="none">
+        <rect x="0" y="0" width="180" height="34" fill={C.surface} />
+        <text x="90" y="22" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="14" letterSpacing="1.5" fill={C.ink}>
+          PERCEPTION
+        </text>
+        <line x1="90" y1="34" x2="90" y2="56" />
+        {['PATROL', 'CHASE', 'ATTACK', 'LOSE'].map((t, i) => (
+          <g key={t}>
+            <line x1="90" y1="56" x2={22 + i * 46} y2="76" />
+            <rect x={i * 45} y={76} width="40" height="24" fill={C.paper} />
+            <text x={i * 45 + 20} y="92" textAnchor="middle" fontFamily="ui-monospace, monospace" fontSize="10" fill={C.muted}>
+              {t}
             </text>
           </g>
-        )
-      })}
-      {/* 输送线 */}
-      <path
-        d="M180 596h220c40 0 40-60 80-60"
-        stroke={C.accent}
-        strokeWidth="1.4"
-        fill="none"
-        strokeDasharray="7 6"
-      />
-      <text x="132" y="640" fontFamily="ui-monospace, monospace" fontSize="12" letterSpacing="3" fill={C.muted}>
-        逐层确认
-      </text>
-      <g transform="translate(840,300)" stroke={C.ink} strokeWidth="1.4" fill="none">
-        <rect x="0" y="0" width="180" height="120" />
-        <line x1="0" y1="30" x2="180" y2="30" />
-        {[0, 1, 2].map((i) => (
-          <line key={i} x1="16" y1={56 + i * 22} x2={i === 2 ? 110 : 150} y2={56 + i * 22} />
         ))}
-        <circle cx="158" cy="16" r="5" fill={C.accent} stroke="none" />
       </g>
+
+      <text x="120" y="650" fontFamily="ui-monospace, monospace" fontSize="15" letterSpacing="3" fill={C.muted}>
+        PUSH &amp; PULL · 攻防节奏
+      </text>
     </g>
+  )
+}
+
+/**
+ * 详情页头部大图：桌面端定高裁切（内容刚好填满），
+ * 手机端改用完整显示，避免两侧被切掉。
+ */
+export function HeroArt({ art }: { art: ArtKey }) {
+  return (
+    <>
+      <ProjectArt art={art} fit="meet" className="h-auto w-full md:hidden" />
+      <ProjectArt
+        art={art}
+        fit="slice"
+        className="hidden h-[clamp(320px,44vw,560px)] w-full md:block"
+      />
+    </>
   )
 }

@@ -1,47 +1,41 @@
 /**
  * 站点内容配置：个人信息 / 能力 / 个人支点 / 经历
  * ------------------------------------------------------------------
- * 说明：所有字段都可以直接改这里，页面会自动更新。
- * 留空字符串的字段不会在页面上渲染（不会显示占位符），
- * 需要展示「待填写」时请显式写 `placeholder: true`。
+ * 所有字段改这里即可，页面会自动更新。
+ * 留空字符串的字段不会渲染；需要显示「待填写」时显式写 placeholder。
  */
 
-export type Placeholder = { placeholder: true }
-
 export const profile = {
-  /** 页面主标题用的英文名 / 拼音 */
-  nameEn: 'Pan Wangkun',
-  /** 中文名，未确认为空即可 */
+  /** 显示名 */
+  nameEn: 'Pluents',
+  /** 中文名，未提供则留空 */
   nameCn: '',
-  role: '游戏策划 · 玩法与系统方向',
-  /** 求职意向 */
-  seeking: '战斗策划 / 系统策划 · 实习与校招',
-  /** 一句话定位，显示在页脚与首页档案 */
-  tagline: '先把判定写清楚，再谈表现。',
+  role: '玩法 / 系统 / 战斗策划',
+  /** 求职状态 */
+  seeking: '2028 届 · 求职中',
+  tagline: '拆得开，也做得出来。',
   location: '',
   /** 首页大标题，\n 手动换行 */
-  headline: '把玩法拆成\n能被验证的规则。',
+  headline: '把战斗拆开看，\n再动手做出来。',
   /** 首页导语 */
-  lead: '我做玩法与系统设计：先把判定、状态和边界写清楚，再去处理表现与包装。这里放着三个玩法案例和若干设计笔记，用来交代我怎么想问题、怎么把想法落成能交付给程序的东西。',
+  lead: '湖北师范大学软件工程 2028 届。做玩法、系统与战斗设计，也写实现：能把一套养成系统拆到数值与构筑层，也能用 UE5 + GAS 把战斗原型真的跑起来。',
   /** 首页档案条 */
   facts: [
-    { label: '方向', value: '玩法 / 系统策划' },
-    { label: '方法', value: '先定判定，再做表现' },
-    { label: '交付', value: '策划案 · 配表 · 可玩 Demo' },
-    { label: '状态', value: '持续更新' },
+    { label: '方向', value: '玩法 / 系统 / 战斗' },
+    { label: '在读', value: '湖北师范大学 · 软件工程' },
+    { label: '工具', value: 'UE5 · GAS · 拆解文档' },
+    { label: '状态', value: '2028 届 · 求职中' },
   ],
 }
 
 export const contact = {
-  /** 邮箱：填写后首页与联系页自动出现入口 */
-  email: '',
+  email: '227794090@qq.com',
   github: 'https://github.com/Pltuens',
   githubLabel: 'github.com/Pltuens',
-  /** 其他公开主页（知乎 / B 站 / itch.io 等） */
   links: [] as { label: string; href: string }[],
-  /** 简历文件：把 PDF 放进 public/ 后写路径，例如 '/files/resume.pdf' */
+  /** 简历：把 PDF 放进 public/files/ 后填路径，例如 '/files/resume.pdf' */
   resume: '',
-  note: '未提供的联系方式不会自行生成；需要时可直接通过邮件联系。',
+  note: '仅公开求职用途的联系方式，不放置私人电话与住址。',
 }
 
 export type SkillGroup = {
@@ -55,40 +49,40 @@ export const skillGroups: SkillGroup[] = [
     title: '玩法与系统',
     en: 'Design',
     items: [
-      '核心循环拆解与验证',
-      '状态机 / 判定条件设计',
-      '关卡结构与难度梯度',
-      '资源循环与数值初稿',
+      '战斗循环与节奏设计',
+      '状态机与判定优先级',
+      '技能 / Buff / Debuff 系统',
+      '耐力与资源循环',
     ],
   },
   {
-    title: '文档与配表',
-    en: 'Spec',
+    title: '系统拆解',
+    en: 'Teardown',
     items: [
-      '策划案写作（结构 / 边界 / 待决策项）',
-      '配置表结构设计与字段约束',
-      '指令集与条件表达式建模',
-      '校验规则与非法态拦截',
+      '养成链路还原',
+      '词条数值与构筑分析',
+      '竞品结构拆解',
+      '社区舆情归纳',
     ],
   },
   {
-    title: '实现与验证',
+    title: '工程实现',
     en: 'Build',
     items: [
-      'HTML / JS 玩法原型',
-      'Python 脚本穷举验证关卡',
-      'Git 版本管理与文档协同',
-      '引擎使用（UE 基础，待补充）',
+      'UE5 / GAS 框架',
+      '动画重定向（IK Retargeter）',
+      'MotionWarping 位移修正',
+      '行为树 AI / Chaos 物理',
     ],
   },
   {
-    title: '表达与协作',
+    title: '文档与协作',
     en: 'Comm',
     items: [
-      '机制拆解长文写作',
-      '交互流程图与状态图',
-      '与程序 / 美术对齐需求口径',
-      '需求评审与疑问点收敛',
+      '拆解分析案写作',
+      '需求与状态说明',
+      '测试反馈迭代',
+      '飞书文档协作',
     ],
   },
 ]
@@ -98,52 +92,44 @@ export type Pivot = {
   en: string
   oneLine: string
   link: string
-  /** true 表示这条方向还需要我本人确认 */
-  draft?: boolean
 }
 
 export const pivots: Pivot[] = [
   {
-    name: '游戏设计',
-    en: 'Design',
-    oneLine: '习惯先问「这个玩法到底在考玩家什么」，再决定要加多少表现。',
-    link: '决定了我在写方案时会先锁定判定与反馈，而不是先堆功能。',
-    draft: true,
+    name: '战斗系统',
+    en: 'Combat',
+    oneLine: '在意「这一刀为什么值得打」，而不是技能特效有多大。',
+    link: '所以做战斗时会先定资源与状态，再谈表现。',
   },
   {
-    name: '机制拆解',
+    name: '系统拆解',
     en: 'Teardown',
-    oneLine: '玩到好机制会拆到状态和判定层，再判断哪些部分可以迁移。',
-    link: '让我能把「好玩」翻译成程序看得懂的条件与优先级。',
-    draft: true,
+    oneLine: '玩到一套养成会拆到链路和卡点，而不只是记数值。',
+    link: '让我能把「不好玩」翻译成具体环节的问题。',
   },
   {
-    name: '技术实践',
-    en: 'Prototype',
-    oneLine: '能自己写 HTML Demo 和脚本，把想法先跑起来再讨论。',
-    link: '减少「文档写完才发现不可行」的返工。',
-    draft: true,
+    name: '工程实现',
+    en: 'Build',
+    oneLine: '自己写实现，能把设计在引擎里先跑一遍。',
+    link: '省掉大量「文档写完才发现做不了」的返工。',
   },
   {
-    name: '独立开发',
-    en: 'Solo',
-    oneLine: '关注小体量、单一机制、能被一个人做完的玩法。',
-    link: '影响我做减法：优先保留能撑住体验的核心规则。',
-    draft: true,
+    name: '数值观察',
+    en: 'Numbers',
+    oneLine: '习惯用收益与消耗衡量系统，而不是凭体感下判断。',
+    link: '拆解与调优时都靠这套口径对齐讨论。',
   },
   {
-    name: 'AI 辅助开发',
-    en: 'Workflow',
-    oneLine: '用 AI 处理配表整理、脚本验证和文档骨架，自己盯判定逻辑。',
-    link: '把重复劳动压掉，时间放到关卡和手感上。',
-    draft: true,
+    name: '关卡节奏',
+    en: 'Pacing',
+    oneLine: '相信节奏来自资源约束和空间设计，不来自堆怪。',
+    link: '影响我做地牢与战斗遭遇时的取舍。',
   },
   {
-    name: '逻辑分析',
-    en: 'Logic',
-    oneLine: '喜欢把模糊的规则写成可校验的表达式。',
-    link: '这是我做配置文档时最常用的一项能力。',
-    draft: true,
+    name: '持续迭代',
+    en: 'Iterate',
+    oneLine: '按测试反馈改，而不是按个人喜好改。',
+    link: '原型阶段尤其重要，早改比改得漂亮重要。',
   },
 ]
 
@@ -154,5 +140,29 @@ export type TimelineItem = {
   detail: string
 }
 
-/** 经历条目：留空时页面会显示空状态，不会编造经历 */
-export const timeline: TimelineItem[] = []
+export const timeline: TimelineItem[] = [
+  {
+    period: '2028 届',
+    title: '软件工程 · 本科',
+    org: '湖北师范大学',
+    detail: '在读。专业训练偏工程实现，做策划的同时保持动手能力。',
+  },
+  {
+    period: '2026.04',
+    title: '《鸣潮》声骸系统拆解',
+    org: '个人项目',
+    detail: '战斗策划 / 系统策划：拆解获取、养成、词条与构筑四条链路，输出结构化拆解案。',
+  },
+  {
+    period: '2025.06 — 2026.05',
+    title: 'Aura · 基于 GAS 的 ARPG',
+    org: '团队原型',
+    detail: '客户端开发 / 战斗系统设计：GAS 战斗框架、状态机、MotionWarping 与打击反馈。',
+  },
+  {
+    period: '2024 — 2025',
+    title: 'Slash · 开放世界类魂原型',
+    org: '团队原型',
+    detail: '战斗与关卡循环设计：动画重定向、耐力博弈、行为树 AI 与地牢反馈循环。',
+  },
+]

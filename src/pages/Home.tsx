@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom'
 import { ProjectArt } from '../components/ProjectArt'
-import { Arrow, DemoBadge, Label, Reveal, SectionHeading, useMeta } from '../components/ui'
-import { articles } from '../data/articles'
-import { profile, skillGroups } from '../data/profile'
+import {
+  Arrow,
+  Glitch,
+  Label,
+  Reveal,
+  SectionHeading,
+  Spotlight,
+  StatusBadge,
+  Ticker,
+  useMeta,
+} from '../components/ui'
+import { contact, profile, skillGroups } from '../data/profile'
 import { projects } from '../data/projects'
 
 export default function Home() {
   useMeta(
-    'Pan Wangkun — 游戏策划作品集',
-    '玩法与系统策划方向的作品集：三个玩法案例与设计笔记，讲清楚判定、状态与配置化交付。',
+    `${profile.nameEn} — 玩法 / 系统 / 战斗策划`,
+    '湖北师范大学软件工程 2028 届。作品集：鸣潮声骸系统拆解、基于 GAS 的 ARPG 原型 Aura、开放世界类魂原型 Slash。',
   )
 
   const featured = projects[0]
@@ -20,8 +29,20 @@ export default function Home() {
       <section className="border-b border-line">
         <div className="container-page grid gap-10 pt-12 pb-14 md:grid-cols-12 md:gap-8 md:pt-20 md:pb-20">
           <div className="md:col-span-8">
-            <Label>Game Design Portfolio — 2026</Label>
-            <h1 className="display-xl mt-6 whitespace-pre-line">{profile.headline}</h1>
+            <div className="flex items-center gap-3">
+              <Label>Game Design Portfolio</Label>
+              <span className="font-mono text-[10px] text-line">/</span>
+              <span className="font-mono text-[10px] tracking-[0.16em] text-muted">
+                2026
+              </span>
+            </div>
+            <h1 className="display-xl mt-6">
+              {profile.headline.split('\n').map((line) => (
+                <span key={line} className="block">
+                  <Glitch text={line} />
+                </span>
+              ))}
+            </h1>
           </div>
           <div className="flex flex-col justify-end gap-7 md:col-span-4 md:border-l md:border-line md:pl-8">
             <p className="text-[14.5px] leading-[1.95] text-ink-soft">{profile.lead}</p>
@@ -33,12 +54,12 @@ export default function Home() {
                 查看作品
                 <Arrow className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
-              <Link
-                to="/about"
+              <a
+                href={`mailto:${contact.email}`}
                 className="inline-flex items-center gap-2 border border-line px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-soft transition-colors hover:border-ink hover:text-ink"
               >
-                关于我
-              </Link>
+                发邮件
+              </a>
             </div>
           </div>
         </div>
@@ -55,6 +76,19 @@ export default function Home() {
         </div>
       </section>
 
+      <Ticker
+        items={[
+          'COMBAT LOOP',
+          'STATE MACHINE',
+          'STAMINA ECONOMY',
+          'GAS FRAMEWORK',
+          'SYSTEM TEARDOWN',
+          'MOTION WARPING',
+          'AI BEHAVIOR TREE',
+          'LEVEL PACING',
+        ]}
+      />
+
       {/* ------------------------------------------------------------ 作品 */}
       <section className="container-page py-16 md:py-20">
         <SectionHeading
@@ -68,9 +102,10 @@ export default function Home() {
             to={`/works/${featured.slug}`}
             className="group grid border border-line bg-surface transition-colors hover:border-ink/40 md:grid-cols-12"
           >
-            <div className="overflow-hidden border-b border-line md:col-span-7 md:order-2 md:border-b-0 md:border-l">
+            <div className="hud-frame scan overflow-hidden border-b border-line md:col-span-7 md:order-2 md:border-b-0 md:border-l">
               <ProjectArt
                 art={featured.art}
+                fit="meet"
                 className="h-full w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.02]"
               />
             </div>
@@ -78,9 +113,11 @@ export default function Home() {
               <div>
                 <div className="flex items-center justify-between">
                   <Label>{featured.index} / Featured</Label>
-                  <DemoBadge />
+                  <StatusBadge>{featured.status}</StatusBadge>
                 </div>
-                <h3 className="display-l mt-6">{featured.title}</h3>
+                <h3 className="mt-6 font-display text-[clamp(1.6rem,2.6vw,2.1rem)] leading-[1.18] font-medium tracking-[-0.02em]">
+                  <Glitch text={featured.title} />
+                </h3>
                 <p className="mt-2 text-[14px] text-muted">{featured.subtitle}</p>
                 <p className="mt-6 max-w-[42ch] text-[14.5px] leading-[1.9] text-ink-soft">
                   {featured.summary}
@@ -128,7 +165,7 @@ export default function Home() {
                 </div>
 
                 <div className="pointer-events-none absolute right-24 bottom-full z-10 hidden w-64 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:block">
-                  <div className="border border-ink/20 bg-surface p-1.5 shadow-[0_18px_50px_-24px_rgba(23,21,15,0.5)]">
+                  <div className="hud-frame border border-ink/20 bg-surface p-1.5 shadow-[0_18px_50px_-24px_rgba(23,21,15,0.5)]">
                     <ProjectArt art={p.art} className="h-36 w-full" />
                   </div>
                 </div>
@@ -136,10 +173,6 @@ export default function Home() {
             </Reveal>
           ))}
         </div>
-
-        <p className="mt-6 max-w-[62ch] font-mono text-[11.5px] leading-relaxed tracking-wide text-muted">
-          说明：以上条目为版面结构演示，标注「示例条目」的项目内容不代表真实项目成果，正式资料替换后角标会移除。
-        </p>
       </section>
 
       {/* ------------------------------------------------------------ 能力 */}
@@ -171,62 +204,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------ 笔记 */}
-      <section className="container-page py-16 md:py-20">
-        <SectionHeading
-          eyebrow="Writing"
-          title="设计笔记"
-          action={{ label: '全部笔记', to: '/writing' }}
-        />
-        <ul>
-          {articles.slice(0, 3).map((a, i) => (
-            <Reveal as="li" key={a.slug} delay={i * 60}>
-              <Link
-                to={`/writing/${a.slug}`}
-                className="group grid gap-3 border-b border-line py-6 md:grid-cols-[auto_1fr_auto] md:items-baseline md:gap-8"
-              >
-                <span className="font-mono text-[11px] text-muted">{a.index}</span>
-                <div>
-                  <h3 className="font-display text-[19px] leading-snug transition-colors group-hover:text-accent md:text-[21px]">
-                    {a.title}
-                  </h3>
-                  <p className="mt-2 max-w-[64ch] text-[13.5px] leading-relaxed text-muted">
-                    {a.summary}
-                  </p>
-                </div>
-                <span className="whitespace-nowrap font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted">
-                  {a.category} · {a.readTime}
-                </span>
-              </Link>
-            </Reveal>
-          ))}
-        </ul>
-      </section>
-
       {/* ------------------------------------------------------------ 联系 */}
-      <section className="container-page pb-4">
-        <div className="bg-ink px-6 py-12 text-paper md:px-12 md:py-16">
-          <div className="grid gap-8 md:grid-cols-[1.3fr_1fr] md:items-end">
+      <section className="container-page py-16 md:py-20">
+        <Spotlight className="scan overflow-hidden px-6 py-12 text-paper md:px-12 md:py-16">
+          <div className="relative z-10 grid gap-8 md:grid-cols-[1.35fr_1fr] md:items-end">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
-                Contact
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/45">
+                Contact / 2028 届
               </p>
-              <h2 className="display-l mt-4 text-paper">想聊玩法，直接找我。</h2>
+              <h2 className="display-l mt-4 text-paper">
+                <Glitch text="在找能做战斗的策划？" />
+              </h2>
               <p className="mt-4 max-w-[46ch] text-[14px] leading-[1.9] text-paper/70">
-                目前关注玩法与系统策划方向的机会。看作品、聊设计、或需要补充材料，都可以直接联系。
+                作品、拆解文档和演示视频都可以直接看；如果需要更细的设计过程，我可以按项目补材料。
               </p>
             </div>
-            <div className="flex flex-wrap gap-3 md:justify-end">
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 bg-paper px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:bg-accent hover:text-paper"
+            <div className="flex flex-col gap-3 md:items-end">
+              <a
+                href={`mailto:${contact.email}`}
+                className="group inline-flex items-center gap-2 bg-paper px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition-colors hover:bg-accent hover:text-paper"
               >
-                联系方式
-                <Arrow className="h-3.5 w-3.5" />
-              </Link>
+                发邮件
+                <Arrow className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </a>
+              <span className="font-mono text-[10.5px] tracking-[0.1em] text-paper/45">
+                {contact.email}
+              </span>
             </div>
           </div>
-        </div>
+
+          <div className="relative z-10 mt-10 grid grid-cols-2 gap-4 border-t border-paper/15 pt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-paper/45 sm:grid-cols-4">
+            <span>03 cases</span>
+            <span>UE5 / GAS</span>
+            <span>Teardown → Build</span>
+            <span>Hubei Normal Univ.</span>
+          </div>
+        </Spotlight>
       </section>
     </>
   )

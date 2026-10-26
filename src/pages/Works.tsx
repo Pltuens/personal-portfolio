@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ProjectArt } from '../components/ProjectArt'
-import { Arrow, DemoBadge, Label, PageHeader, Reveal, useMeta } from '../components/ui'
+import { Arrow, Label, PageHeader, Reveal, StatusBadge, useMeta } from '../components/ui'
 import { categories, projects } from '../data/projects'
 
 export default function Works() {
   useMeta(
-    '作品 — Pan Wangkun',
-    '玩法设计案例：叙事拼接解谜、三杯倒水解谜、小游戏需求拆解。',
+    '作品 — Pluents',
+    '三个项目：鸣潮声骸系统拆解、基于 GAS 的 ARPG 原型 Aura、开放世界类魂原型 Slash。',
   )
   const [active, setActive] = useState<(typeof categories)[number]>('全部')
 
@@ -19,19 +19,19 @@ export default function Works() {
   return (
     <>
       <PageHeader
-        eyebrow="Works — 03 Cases"
+        eyebrow="Works — 03 Projects"
         title={
           <>
-            三个案例，
+            拆过系统，
             <br />
-            三种讲清玩法的方式。
+            也做过战斗。
           </>
         }
-        lead="每个案例都按「问题 → 规则 → 交付」的顺序写，重点放在判定怎么定、边界在哪、最后交给程序的是什么。"
+        lead="三个项目分别对应三种能力：把竞品系统拆到可复用的框架、把战斗系统在引擎里实现出来、把关卡与节奏调成一整套体验。"
         right={
           <div className="flex items-center gap-2 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            含示例条目
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+            2024 — 2026
           </div>
         }
       />
@@ -66,24 +66,23 @@ export default function Works() {
                 className="group grid border border-line bg-surface transition-colors hover:border-ink/40 md:grid-cols-12"
               >
                 <div
-                  className={`overflow-hidden border-b border-line md:col-span-5 md:border-b-0 ${
-                    i % 2 === 1
-                      ? 'md:order-2 md:border-l'
-                      : 'md:order-1 md:border-r'
+                  className={`hud-frame scan overflow-hidden border-b border-line md:col-span-5 md:border-b-0 ${
+                    i % 2 === 1 ? 'md:order-2 md:border-l' : 'md:order-1 md:border-r'
                   }`}
                 >
                   <ProjectArt
                     art={p.art}
+                    fit="meet"
                     className="h-full w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
                   />
                 </div>
-                <div className="flex flex-col justify-between gap-8 p-6 md:col-span-7 md:p-9">
+                <div className="flex min-w-0 flex-col justify-between gap-8 p-6 md:col-span-7 md:p-9">
                   <div>
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <Label>
                         {p.index} / {p.category}
                       </Label>
-                      <DemoBadge>{p.status}</DemoBadge>
+                      <StatusBadge>{p.status}</StatusBadge>
                     </div>
                     <h2 className="display-l mt-5 transition-colors group-hover:text-accent">
                       {p.title}
@@ -122,7 +121,7 @@ export default function Works() {
 
         {list.length === 0 && (
           <div className="mt-10 border border-dashed border-line py-20 text-center">
-            <p className="font-display text-[18px]">这个分类下还没有案例</p>
+            <p className="font-display text-[18px]">这个分类下还没有项目</p>
             <button
               type="button"
               onClick={() => setActive('全部')}
@@ -134,15 +133,12 @@ export default function Works() {
         )}
 
         <div className="mt-14 grid gap-8 border-t border-line pt-8 md:grid-cols-[1fr_1.4fr]">
-          <Label>关于这些条目</Label>
+          <Label>关于这些材料</Label>
           <div className="space-y-3 text-[13.5px] leading-[1.9] text-ink-soft">
             <p>
-              当前三个案例是版面结构演示，用来展示我会怎么组织一个玩法案例：先交代约束，再落规则，最后给交付物。
-              它们被显式标注为「示例条目」，不代表已上线的商业项目。
+              拆解案以飞书文档交付，演示视频为原型录屏。站内只讲方法与取舍，不放内部数值与原文档全文。
             </p>
-            <p>
-              真实项目资料替换后，角标会移除；替换方式见仓库 README 的「内容维护」一节。
-            </p>
+            <p>需要看完整文档或视频，可以直接联系，我会按项目提供链接。</p>
           </div>
         </div>
       </section>

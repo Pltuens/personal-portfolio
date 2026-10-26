@@ -2,13 +2,11 @@ import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Layout from './components/Layout'
 import About from './pages/About'
-import ArticleDetail from './pages/ArticleDetail'
 import Contact from './pages/Contact'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import ProjectDetail from './pages/ProjectDetail'
 import Works from './pages/Works'
-import Writing from './pages/Writing'
 
 /** 路由切换时回到顶部；带 hash 时滚动到锚点 */
 function ScrollManager() {
@@ -37,8 +35,6 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="works" element={<Works />} />
           <Route path="works/:slug" element={<ProjectDetail />} />
-          <Route path="writing" element={<Writing />} />
-          <Route path="writing/:slug" element={<ArticleDetail />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />

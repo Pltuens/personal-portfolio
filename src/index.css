@@ -203,3 +203,203 @@
   transform: scaleX(1);
   opacity: 0.35;
 }
+
+/* ---------------------------------------------------------------- 特效层 */
+
+@keyframes ticker-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.ticker-track {
+  animation: ticker-scroll 42s linear infinite;
+}
+
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+/* 扫描线：给图示与暗场区块加一层"信号"感 */
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-30%);
+  }
+  100% {
+    transform: translateY(520%);
+  }
+}
+
+.scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 18%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(168, 67, 42, 0.13),
+    transparent
+  );
+  animation: scan-sweep 7.5s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* 色散故障：只在悬停/聚焦时触发，不干扰阅读 */
+@keyframes glitch-a {
+  0% {
+    clip-path: inset(0 0 76% 0);
+    transform: translate(0, 0);
+  }
+  40% {
+    clip-path: inset(18% 0 52% 0);
+    transform: translate(4px, -1px);
+  }
+  70% {
+    clip-path: inset(46% 0 24% 0);
+    transform: translate(-3px, 1px);
+  }
+  100% {
+    clip-path: inset(0 0 52% 0);
+    transform: translate(2px, 0);
+  }
+}
+
+@keyframes glitch-b {
+  0% {
+    clip-path: inset(62% 0 0 0);
+    transform: translate(0, 0);
+  }
+  45% {
+    clip-path: inset(40% 0 22% 0);
+    transform: translate(-4px, 1px);
+  }
+  75% {
+    clip-path: inset(12% 0 60% 0);
+    transform: translate(3px, -1px);
+  }
+  100% {
+    clip-path: inset(52% 0 0 0);
+    transform: translate(-2px, 0);
+  }
+}
+
+.glitch {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s linear;
+}
+
+.glitch:hover::before,
+.glitch:focus-visible::before {
+  opacity: 0.75;
+  color: var(--color-accent);
+  animation: glitch-a 0.42s steps(3, end) 1;
+}
+
+.glitch:hover::after,
+.glitch:focus-visible::after {
+  opacity: 0.6;
+  color: var(--color-jade);
+  animation: glitch-b 0.42s steps(3, end) 1;
+}
+
+/* HUD 取景角标 */
+.hud-frame {
+  position: relative;
+}
+
+.hud-frame::before,
+.hud-frame::after {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-color: rgba(23, 21, 15, 0.5);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hud-frame::before {
+  top: 9px;
+  left: 9px;
+  border-width: 1px 0 0 1px;
+}
+
+.hud-frame::after {
+  right: 9px;
+  bottom: 9px;
+  border-width: 0 1px 1px 0;
+}
+
+/* 暗场：鼠标跟随的光斑 + 网格 */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      540px circle at var(--mx, 72%) var(--my, 28%),
+      rgba(168, 67, 42, 0.3),
+      transparent 62%
+    ),
+    #14130e;
+}
+
+.cyber-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(243, 240, 232, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(243, 240, 232, 0.055) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(circle at 50% 45%, #000 10%, transparent 82%);
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 10%, transparent 82%);
+}
+
+/* 路由切换的淡入 */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: page-in 0.5s var(--ease-out-soft) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track,
+  .scan::after,
+  .page-enter {
+    animation: none !important;
+  }
+  .glitch:hover::before,
+  .glitch:hover::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

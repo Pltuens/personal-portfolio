@@ -45,8 +45,7 @@ personal-portfolio/
 │   │   └── ui.tsx          # 通用原子组件与 useMeta
 │   ├── data/
 │   │   ├── profile.ts      # 个人信息、能力、个人支点、经历
-│   │   ├── projects.ts     # 作品数据
-│   │   └── articles.ts     # 笔记数据
+│   │   └── projects.ts     # 作品数据
 │   ├── pages/              # 首页 / 作品 / 案例 / 笔记 / 关于 / 联系 / 404
 │   ├── App.tsx             # 路由
 │   ├── index.css           # 设计令牌与基础样式
@@ -61,9 +60,7 @@ personal-portfolio/
 | --- | --- | --- |
 | `/` | 首页 | 定位、精选案例、能力、最新笔记、联系入口 |
 | `/works` | 作品列表 | 按类型筛选 |
-| `/works/:slug` | 案例详情 | 侧边目录 + 分章节内容 + 沉淀 |
-| `/writing` | 笔记列表 | 按分类筛选 |
-| `/writing/:slug` | 笔记详情 | 正文 + 相关笔记 |
+| `/works/:slug` | 案例详情 | 侧边目录 + 分章节内容 + 沉淀 + 外部材料链接 |
 | `/about` | 关于 | 工作方法、能力、个人支点、经历、工具链 |
 | `/contact` | 联系 | 邮箱 / GitHub / 简历 / 可提供材料 / 隐私说明 |
 | `*` | 404 | 兜底页 |
@@ -99,15 +96,12 @@ personal-portfolio/
 ```
 
 - `art`：选封面图形（`grid` 分镜格 / `vessel` 三只杯 / `layer` 分层堆叠）。
-- `demo: true` 会显示「示例条目」角标。换成真实项目后设为 `false`。
+- `status` 会渲染成列表与详情页的状态角标（如「已完成」「原型完成」）。
 - 新增项目会自动出现在 `/works` 与首页列表，详情页路由自动生成。
 
-### 3. 笔记 — `src/data/articles.ts`
+`links` 用于外部材料（飞书文档、演示视频），会渲染成详情页头部的按钮。
 
-字段：`title` / `kicker` / `category` / `date` / `readTime` / `summary` / `blocks`。
-`category` 会进入筛选器，新增分类记得同步 `articleCategories`。
-
-### 4. 增删页面
+### 3. 增删页面
 
 在 `src/pages/` 新建组件，然后在 `src/App.tsx` 的 `<Routes>` 里加一条 `<Route>`，
 导航项在 `src/components/Layout.tsx` 的 `NAV` 数组里。

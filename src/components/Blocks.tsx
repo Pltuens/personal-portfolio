@@ -122,8 +122,12 @@ function BlockView({ block }: { block: Block }) {
     case 'figure':
       return (
         <figure className="mt-2">
-          <div className="border border-line bg-surface">
-            <ProjectArt art={block.art} className="h-auto w-full" />
+          <div className="border border-line bg-paper-deep">
+            <ProjectArt
+              art={block.art}
+              fit="slice"
+              className="h-[clamp(220px,32vw,440px)] w-full"
+            />
           </div>
           <figcaption className="mt-3 font-mono text-[10.5px] tracking-wide text-muted">
             {block.caption}

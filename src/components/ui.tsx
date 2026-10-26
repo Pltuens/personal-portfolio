@@ -90,10 +90,10 @@ export function Label({ children }: { children: ReactNode }) {
   return <span className="label">{children}</span>
 }
 
-export function DemoBadge({ children = '示例条目' }: { children?: ReactNode }) {
+export function StatusBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 border border-line bg-paper-deep/60 px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-      <span className="h-1 w-1 rounded-full bg-accent/70" />
+    <span className="inline-flex items-center gap-1.5 border border-line px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+      <span className="h-1 w-1 rounded-full bg-jade/70" />
       {children}
     </span>
   )
@@ -112,6 +112,76 @@ export function Arrow({ className = '' }: { className?: string }) {
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="none">
       <path d="M4 12h15M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.4" />
     </svg>
+  )
+}
+
+/** 悬停/聚焦时的色散故障效果，纯 CSS 实现 */
+export function Glitch({
+  text,
+  className = '',
+}: {
+  text: string
+  className?: string
+}) {
+  return (
+    <span className={`glitch ${className}`} data-text={text}>
+      {text}
+    </span>
+  )
+}
+
+/** 滚动信息条 */
+export function Ticker({ items }: { items: string[] }) {
+  const row = [...items, ...items]
+  return (
+    <div
+      className="ticker overflow-hidden border-y border-line bg-paper-deep/30 py-2.5"
+      aria-hidden="true"
+    >
+      <div className="ticker-track flex w-max items-center">
+        {row.map((t, i) => (
+          <span
+            key={i}
+            className="flex shrink-0 items-center gap-6 pr-6 font-mono text-[10px] uppercase tracking-[0.18em] text-muted"
+          >
+            {t}
+            <span className="text-accent/70">◆</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** 跟随鼠标的暗场区块 */
+export function Spotlight({
+  children,
+  className = '',
+  id,
+}: {
+  children: ReactNode
+  className?: string
+  id?: string
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    el.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
+  return (
+    <div
+      ref={ref}
+      id={id}
+      onMouseMove={onMove}
+      className={`spotlight cyber-grid ${className}`}
+    >
+      {children}
+    </div>
   )
 }
 

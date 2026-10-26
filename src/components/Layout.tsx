@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { contact, profile } from '../data/profile'
 import { Arrow, Label } from './ui'
 
 const NAV = [
   { to: '/works', label: '作品', en: 'Works' },
-  { to: '/writing', label: '笔记', en: 'Writing' },
   { to: '/about', label: '关于', en: 'About' },
   { to: '/contact', label: '联系', en: 'Contact' },
 ]
 
 export default function Layout() {
   const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -24,7 +24,7 @@ export default function Layout() {
     <div className="flex min-h-screen flex-col">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-60 focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
       >
         跳到主要内容
       </a>
@@ -37,6 +37,12 @@ export default function Layout() {
             </span>
             <span className="hidden font-mono text-[10px] tracking-[0.18em] text-muted sm:inline">
               PORTFOLIO
+            </span>
+            <span className="ml-1 hidden items-center gap-1.5 lg:flex">
+              <span className="h-1 w-1 animate-pulse rounded-full bg-accent" />
+              <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">
+                open to work
+              </span>
             </span>
           </Link>
 
@@ -124,13 +130,22 @@ export default function Layout() {
                 GitHub
                 <Arrow className="h-4 w-4" />
               </a>
+              <a
+                href={`mailto:${contact.email}`}
+                className="flex items-center justify-between border-t border-line-soft py-4 text-[15px] text-muted"
+              >
+                {contact.email}
+                <Arrow className="h-4 w-4" />
+              </a>
             </nav>
           </div>
         )}
       </header>
 
       <main id="main" className="flex-1">
-        <Outlet />
+        <div key={pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
 
       <Footer />
@@ -147,7 +162,9 @@ function Footer() {
             <p className="font-display text-[clamp(1.6rem,3vw,2.2rem)] leading-tight">
               {profile.nameEn}
             </p>
-            <p className="mt-2 text-[13px] text-muted">{profile.role}</p>
+            <p className="mt-2 text-[13px] text-muted">
+              {profile.role} · {profile.seeking}
+            </p>
             <p className="mt-6 max-w-sm font-display text-[15px] leading-relaxed text-ink-soft">
               「{profile.tagline}」
             </p>
@@ -156,6 +173,11 @@ function Footer() {
           <div>
             <Label>Index</Label>
             <ul className="mt-4 space-y-2 text-[13.5px] text-ink-soft">
+              <li>
+                <Link to="/" className="link-underline">
+                  首页
+                </Link>
+              </li>
               {NAV.map((n) => (
                 <li key={n.to}>
                   <Link to={n.to} className="link-underline">
@@ -179,17 +201,11 @@ function Footer() {
                   {contact.githubLabel}
                 </a>
               </li>
-              {contact.email ? (
-                <li>
-                  <a href={`mailto:${contact.email}`} className="link-underline">
-                    {contact.email}
-                  </a>
-                </li>
-              ) : (
-                <li className="text-muted">
-                  邮箱 <span className="font-mono text-[11px]">待填写</span>
-                </li>
-              )}
+              <li>
+                <a href={`mailto:${contact.email}`} className="link-underline">
+                  {contact.email}
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -197,9 +213,9 @@ function Footer() {
         <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 {profile.nameEn}</span>
           <span className="normal-case tracking-normal">
-            站内带「示例条目」角标的内容为结构演示，非真实项目成果
+            作品文档与演示视频按需提供，未公开内部资料
           </span>
-          <span>React · Vite · Static</span>
+          <span>UE5 · GAS · React</span>
         </div>
       </div>
     </footer>

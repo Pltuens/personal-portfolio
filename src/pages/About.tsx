@@ -5,7 +5,7 @@ import { contact, pivots, profile, skillGroups, timeline } from '../data/profile
 const principles = [
   {
     title: '先定判定',
-    text: '任何玩法都能被拆成「状态怎么存、事件怎么改、什么时候算过」。这三件事没定，表现做得再多也是返工。',
+    text: '任何战斗都能被拆成「状态怎么存、什么能打断什么、什么时候算命中」。这三件事没定，表现做得再多也是返工。',
   },
   {
     title: '再做减法',
@@ -18,12 +18,14 @@ const principles = [
 ]
 
 const tools = [
+  'Unreal Engine 5',
+  'Gameplay Ability System',
+  'IK Retargeter',
+  'MotionWarping',
+  'Behavior Tree / AI Perception',
+  'Chaos 物理破碎',
+  '飞书文档',
   'Git / GitHub',
-  'React + Vite（做原型与页面）',
-  'Python（关卡穷举与数据整理）',
-  'JSON / Excel 配表',
-  'Unreal Engine（基础，待补充）',
-  'Figma / 流程图工具',
 ]
 
 export default function About() {
@@ -110,8 +112,8 @@ export default function About() {
       <section className="container-page py-16">
         <SectionHeading eyebrow="Pivots" title="个人支点" />
         <p className="mb-8 max-w-[62ch] text-[13.5px] leading-[1.9] text-muted">
-          比起罗列技能，我更愿意说清楚「哪些东西在长期支撑我做设计」。以下六条是当前的方向，
-          待本人确认后会调整为最终版本。
+          比起罗列技能，我更愿意说清楚「哪些东西在长期支撑我做设计」。这六条基本决定了我在项目里
+          会先看什么、先改什么。
         </p>
         <div className="grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
           {pivots.map((p) => (

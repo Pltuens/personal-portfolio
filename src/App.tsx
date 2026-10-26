@@ -10,7 +10,7 @@ import ProjectDetail from './pages/ProjectDetail'
 import Works from './pages/Works'
 
 /** 白光褪去的时长，要和 index.css 里 .intro-curtain 的过渡保持一致 */
-const CURTAIN_MS = 580
+const CURTAIN_MS = 480
 
 /** 路由切换时回到顶部；带 hash 时滚动到锚点 */
 function ScrollManager() {

@@ -779,7 +779,7 @@ body.intro-open .crosshair {
   opacity: 1;
   background:
     radial-gradient(circle at 50% 44%, #ffffff 0%, rgba(248, 253, 255, 1) 40%, rgba(228, 246, 252, 1) 76%, rgba(208, 237, 250, 1) 100%);
-  transition: opacity 0.58s linear;
+  transition: opacity 0.48s linear;
 }
 
 .intro-curtain.is-fading {
@@ -817,7 +817,7 @@ body.intro-open .crosshair {
  * 那个元素自带 page-in 动画，撤销覆盖会让 page-in 重新播放，内容会闪一下再重进。
  */
 body.is-revealing #main {
-  animation: shell-reveal 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: shell-reveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* 白光期间不显示准星光标，否则青色准星会浮在一片白上 */

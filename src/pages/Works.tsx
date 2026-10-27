@@ -73,7 +73,7 @@ export default function Works() {
             <Reveal key={p.slug} delay={i * 70}>
               <Link
                 to={`/works/${p.slug}`}
-                className="group relative grid grid-cols-1 items-start gap-5 border-b border-line py-8 transition-colors hover:bg-surface/50 md:grid-cols-12 md:items-center md:gap-6 md:py-11"
+                className="group relative grid grid-cols-1 items-start gap-5 border-b border-line py-7 transition-colors hover:bg-surface/50 md:grid-cols-12 md:items-center md:gap-6 md:py-10"
               >
                 {/* 大编号 */}
                 <span
@@ -84,7 +84,7 @@ export default function Works() {
                 </span>
 
                 {/* 标题与标签 */}
-                <div className="min-w-0 md:col-span-7">
+                <div className="min-w-0 md:col-span-6">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
                     <h2 className="display-l transition-colors duration-300 group-hover:text-accent">
                       {p.title}
@@ -92,6 +92,9 @@ export default function Works() {
                     <StatusBadge>{p.status}</StatusBadge>
                   </div>
                   <p className="mt-2 text-[14px] text-muted">{p.subtitle}</p>
+                  <p className="mt-1.5 font-mono text-[11px] tracking-[0.06em] text-muted/75">
+                    {p.kind}
+                  </p>
                   <ul className="mt-4 flex flex-wrap gap-1.5">
                     {p.tags.map((t) => (
                       <li
@@ -104,20 +107,25 @@ export default function Works() {
                   </ul>
                 </div>
 
-                {/* 元信息 */}
-                <div className="flex items-end md:col-span-4 justify-between gap-4 border-t border-line-soft pt-4 md:flex-col md:items-end md:gap-2 md:border-t-0 md:pt-0 md:text-right">
-                  <span className="font-mono text-[11px] tracking-[0.1em] text-muted">{p.kind}</span>
+                {/* 常驻缩略图：不给 hover 才出现的理由，招聘方扫一眼就得看见作品。
+                 * 用 meet + 与 SVG 同比例的盒子 + 同色底（#080d14 = paper-deep），
+                 * 整张示意图完整显示，也不会出现比纸边更亮的信箱条。 */}
+                <div className="md:col-span-3">
+                  <div className="hud-frame overflow-hidden border border-line bg-paper-deep p-1 transition-colors duration-300 group-hover:border-accent/40">
+                    <ProjectArt
+                      art={p.art}
+                      fit="meet"
+                      className="aspect-[1200/760] w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
+                    />
+                  </div>
+                </div>
+
+                {/* 元信息：只留时间，类型已经挪到标题下，这里再放会长到两行 */}
+                <div className="flex items-end md:col-span-2 justify-between gap-4 border-t border-line-soft pt-4 md:flex-col md:items-end md:gap-2 md:border-t-0 md:pt-0 md:text-right">
                   <span className="flex items-center gap-3 font-mono text-[11px] tracking-[0.12em] text-muted">
                     {p.period}
                     <Arrow className="h-3.5 w-3.5 -translate-x-1 opacity-40 transition-all duration-300 group-hover:translate-x-0 group-hover:text-accent group-hover:opacity-100" />
                   </span>
-                </div>
-
-                {/* 悬停时从右侧滑入的缩略图 */}
-                <div className="pointer-events-none absolute top-1/2 right-[16%] hidden w-[236px] -translate-y-1/2 translate-x-5 opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0 group-hover:opacity-100 lg:block">
-                  <div className="hud-frame border border-accent/30 bg-paper-deep p-1 shadow-[0_24px_60px_-30px_rgba(53,226,255,0.6)]">
-                    <ProjectArt art={p.art} fit="meet" className="h-[124px] w-full" />
-                  </div>
                 </div>
               </Link>
             </Reveal>

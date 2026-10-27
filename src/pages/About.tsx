@@ -62,24 +62,28 @@ export default function About() {
         }
       />
 
-      {/* 数据带：给页面一个视觉重音 */}
+      {/* 数据带：给页面一个视觉重音。
+       * 注意 bg-line（格子之间的分隔色）要挂在**内层**：container-page 带左右 padding，
+       * 背景会铺满 padding 盒，格子却只排到内容盒 —— 右边就会漏出一条 17px 的灰条。 */}
       <section className="border-b border-line">
-        <div className="container-page grid grid-cols-2 gap-px bg-line md:grid-cols-4">
-          {[
-            ['03', '项目', 'Cases'],
-            ['02', '原型年份', 'Years'],
-            ['01', '实习', 'Internship'],
-            ['01', '省级一等奖', 'Award'],
-          ].map(([n, label, en]) => (
-            <div key={label} className="bg-paper px-5 py-7">
-              <p className="font-display text-[clamp(2.1rem,4vw,3.1rem)] leading-none tracking-[-0.03em] text-accent">
-                {n}
-              </p>
-              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                {label} <span className="text-muted/50">/ {en}</span>
-              </p>
-            </div>
-          ))}
+        <div className="container-page">
+          <div className="grid grid-cols-2 gap-px bg-line md:grid-cols-4">
+            {[
+              ['03', '项目', 'Cases'],
+              ['02', '原型年份', 'Years'],
+              ['01', '实习', 'Internship'],
+              ['01', '省级一等奖', 'Award'],
+            ].map(([n, label, en]) => (
+              <div key={label} className="bg-paper px-5 py-7">
+                <p className="font-display text-[clamp(2.1rem,4vw,3.1rem)] leading-none tracking-[-0.03em] text-accent">
+                  {n}
+                </p>
+                <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+                  {label} <span className="text-muted/50">/ {en}</span>
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

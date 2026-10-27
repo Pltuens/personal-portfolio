@@ -246,30 +246,39 @@ export default function Home() {
           </Link>
         </Reveal>
 
-        <div className="mt-4">
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
           {rest.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 60}>
+            <Reveal key={p.slug} delay={i * 60} className="h-full">
               <Link
                 to={`/works/${p.slug}`}
-                className="group relative grid grid-cols-[auto_1fr_auto] items-baseline gap-4 border-b border-line py-7 md:gap-8"
+                className="tech-card group flex h-full flex-col border border-line bg-surface"
               >
-                <span className="font-mono text-[11px] text-muted">{p.index}</span>
-                <div className="min-w-0">
-                  <h3 className="display-m transition-colors group-hover:text-accent">
-                    {p.title}
-                  </h3>
-                  <p className="mt-1.5 text-[13.5px] text-muted">{p.subtitle}</p>
+                <div className="hud-frame overflow-hidden border-b border-line bg-paper-deep">
+                  <ProjectArt
+                    art={p.art}
+                    fit="meet"
+                    className="aspect-[1200/760] w-full transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
+                  />
                 </div>
-                <div className="flex items-center gap-6">
-                  <span className="hidden font-mono text-[11px] uppercase tracking-[0.12em] text-muted sm:inline">
-                    {p.category}
-                  </span>
-                  <Arrow className="h-4 w-4 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
-                </div>
-
-                <div className="pointer-events-none absolute right-24 bottom-full z-10 hidden w-64 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 lg:block">
-                  <div className="hud-frame border border-ink/20 bg-surface p-1.5 shadow-[0_18px_50px_-24px_rgba(23,21,15,0.5)]">
-                    <ProjectArt art={p.art} className="h-36 w-full" />
+                <div className="flex flex-1 flex-col justify-between gap-6 p-6">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <Label>{p.index} / Case</Label>
+                      <StatusBadge>{p.status}</StatusBadge>
+                    </div>
+                    <h3 className="display-m mt-4 transition-colors group-hover:text-accent">
+                      {p.title}
+                    </h3>
+                    <p className="mt-2 text-[13.5px] text-muted">{p.subtitle}</p>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
+                      {p.category}
+                    </span>
+                    <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted transition-colors group-hover:text-accent">
+                      查看案例
+                      <Arrow className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -282,21 +291,27 @@ export default function Home() {
       <section id="capability" className="glow-panel scroll-mt-20 border-y border-line">
         <div className="container-page py-16 md:py-20">
           <SectionHeading eyebrow="Capability" title="我能交付什么" />
-          <div className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
+          {/* 2×2 改成 4 列单行：16 条能一眼扫完，不用左右上下跳。
+           * 英文标签从「推到最右」改成紧跟标题 —— justify-between 会在中间拉出一大段空白，
+           * 标题和它的英文名读起来就断了。 */}
+          <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
             {skillGroups.map((g, i) => (
               <Reveal key={g.title} delay={i * 60}>
                 <div className="border-t border-ink/15 pt-4">
-                  <div className="flex items-baseline justify-between">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h3 className="font-display text-[17px]">{g.title}</h3>
-                    <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-                      {g.en}
+                    <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted/70">
+                      / {g.en}
                     </span>
                   </div>
-                  <ul className="mt-4 space-y-2">
+                  <ul className="mt-4 space-y-2.5">
                     {g.items.map((it) => (
-                      <li key={it} className="flex gap-3 text-[13.5px] leading-relaxed text-ink-soft">
-                        <span className="mt-[9px] h-[4px] w-[4px] shrink-0 bg-ink/40" />
-                        {it}
+                      <li
+                        key={it}
+                        className="flex gap-2.5 text-[13.5px] leading-[1.75] text-ink-soft"
+                      >
+                        <span className="mt-[11px] h-px w-2.5 shrink-0 bg-accent/50" />
+                        <span className="min-w-0">{it}</span>
                       </li>
                     ))}
                   </ul>

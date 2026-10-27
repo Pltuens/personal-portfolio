@@ -822,7 +822,7 @@ body.is-holo #main {
 
 /* 问候语是整段里唯一有温度的一句，留到最后走 */
 .intro.is-out .intro-sub-wrap {
-  animation: intro-out 0.42s ease-in 0.1s forwards;
+  animation: intro-out 0.36s ease-in 0.05s forwards;
 }
 
 /* 仪表盘退得快一些，把注意力让给标题 */

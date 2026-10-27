@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import HoloField from './HoloField'
 import IntroBackdrop from './IntroBackdrop'
+import WarpField, { WARP_MS } from './WarpField'
 
 /**
  * 入场欢迎页（启动画面）
@@ -17,12 +17,12 @@ import IntroBackdrop from './IntroBackdrop'
 export const INTRO_KEY = 'pluents:intro-shown'
 const PROGRESS = 1400
 /**
- * 退场总时长 = 粒子动画的总时长（见 HoloField 的 TOTAL）。
- * 粒子层是入场的最后一段，它跑完才卸载整张欢迎页。
+ * 退场总时长 = 星门穿越的全程（WarpField 的 WARP_MS）+ 一帧余量。
+ * 星星跑完才卸载整张欢迎页。
  */
-const EXIT = 2050
-/** 减少动效时只有一次 0.3s 的整体淡出，不必等满整套逐字退场 */
-const EXIT_REDUCED = 420
+const EXIT = WARP_MS + 30
+/** 减少动效时只有一次 0.34s 的整体淡出，不必等满整套穿越 */
+const EXIT_REDUCED = 380
 
 export default function Intro({ onDone }: { onDone: () => void }) {
   const [pct, setPct] = useState(0)
@@ -30,7 +30,6 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const [ready, setReady] = useState(false)
   const [leaving, setLeaving] = useState(false)
 
-  const titleRef = useRef<HTMLHeadingElement | null>(null)
   const canEnterRef = useRef(true)
   const onDoneRef = useRef(onDone)
   onDoneRef.current = onDone
@@ -102,7 +101,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       <div className="intro-aurora" aria-hidden="true" />
       <div className="intro-aurora intro-aurora--2" aria-hidden="true" />
       <IntroBackdrop boost={leaving} />
-      <HoloField run={leaving} sourceRef={titleRef} />
+      <WarpField run={leaving} />
 
       <span className="intro-corner intro-corner--tl" aria-hidden="true" />
       <span className="intro-corner intro-corner--tr" aria-hidden="true" />
@@ -116,7 +115,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
         <span className="intro-rule" aria-hidden="true" />
 
-        <h1 ref={titleRef} className="intro-title" aria-label="Pluents">
+        <h1 className="intro-title" aria-label="Pluents">
           {'PLUENTS'.split('').map((c, i) => (
             <span key={i} style={{ ['--i' as string]: i }}>
               {c}

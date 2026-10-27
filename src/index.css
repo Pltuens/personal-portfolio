@@ -706,8 +706,8 @@ body.intro-open .crosshair {
   transition: opacity 0.72s cubic-bezier(0.33, 0, 0.25, 1) 0.3s;
 }
 
-/* 全息粒子层：坐在天空与极光之上、正文之下 */
-.holo-field {
+/* 穿越星空层：坐在天空与极光之上、正文之下 */
+.warp-field {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -770,76 +770,78 @@ body.intro-open .crosshair {
   }
 }
 
-/* 退场：两个界面同时在场的叠化
+/* 退场：只有一个动作 —— 镜头向前推进
  * ------------------------------------------------------------------
- * 不是"盖住再揭开"，而是：仪表先退 → 标题逐字飘散 → 问候语最后走 →
- * 极光先熄 → 整块星空慢慢融进站点自己的星空。
- * 每一步都是错开的，交叠处才有"告别"的感觉。
+ * 星星加速冲过来，欢迎页的字整体放大 + 虚化被甩到镜头后面，
+ * 站点页面再从 1.1 倍缩回 1 倍浮出来。
+ * 三层运动同向，所以读起来是一次换场，而不是几段特效各播各的。
  */
 .intro.is-out {
   pointer-events: none;
 }
 
+.intro.is-out .intro-inner {
+  animation: warp-out 0.8s cubic-bezier(0.45, 0, 0.7, 0.5) 0.1s forwards;
+}
+
+/* 前 22% 几乎不动：星星正在加速，字还稳着；之后才被甩到镜头后面 */
+@keyframes warp-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  22% {
+    opacity: 1;
+    transform: scale(1.03);
+    filter: blur(0);
+  }
+  55% {
+    opacity: 0.88;
+    transform: scale(1.42);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+    filter: blur(12px);
+  }
+}
+
+/* 天空一直压到穿越中段才开始褪，穿出的那一刻才露出页面 */
 .intro.is-out .intro-sky {
   opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.5, 0, 0.75, 0.6) 0.78s;
 }
 
+/* 长曝光星轨退得干脆：它和穿越的星是两种运动，同屏会打架 */
 .intro.is-out .intro-backdrop {
   opacity: 0;
-  transition: opacity 0.7s ease-out 0.22s;
+  transition: opacity 0.42s ease-out;
 }
 
-/* 标题立刻让位给粒子。粒子第一帧就画在字形原位上，接缝看不出来。 */
-.intro.is-out .intro-title {
-  opacity: 0;
-  transition: none;
-}
-
-/* 网站不是淡入，是从粒子里"实体化"：先保持一层很淡的底噪，
- * 等粒子快落位时才收敛到正常。
- * 0.5s 起跑 = HoloField 的 SITE_START(520ms)，0.74s 走完 = 1240ms，
- * 此时粒子已经落了一大半，最后一批正好压在逐渐变实的页面上。 */
-body.is-holo #main {
-  animation: holo-materialize 0.74s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
-}
-
-@keyframes holo-materialize {
-  from {
-    opacity: 0.3;
-    transform: scale(1.018);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* 极光最先熄：它是整块画面里唯一和站点配色打架的东西 */
+/* 极光在加速前熄掉 */
 .intro.is-out .intro-aurora {
   opacity: 0;
-  transition: opacity 0.7s ease-out 0.04s;
+  transition: opacity 0.55s ease-out;
 }
 
-/* 问候语是整段里唯一有温度的一句，留到最后走 */
-.intro.is-out .intro-sub-wrap {
-  animation: intro-out 0.36s ease-in 0.05s forwards;
+/* 四角取景框最后走，像镜头进隧道前松开的手 */
+.intro.is-out .intro-corner {
+  animation: intro-fade-out 0.3s ease-in 0.06s forwards;
 }
 
-/* 仪表盘退得快一些，把注意力让给标题 */
+/* 仪表条/横线被放大后会变成几道横贯屏幕的亮条，像画面撕裂。
+ * 让它们先消失，只留标题和问候语往前飞。 */
 .intro.is-out .intro-eyebrow,
 .intro.is-out .intro-bar,
 .intro.is-out .intro-meta,
 .intro.is-out .intro-continue,
-.intro.is-out .intro-corner {
-  animation: intro-out 0.22s ease-in forwards;
-}
-
-/* 中缝横线单独处理：它的入场动画带 scaleX(1)，直接覆盖会缩回 0 */
 .intro.is-out .intro-rule {
-  animation: intro-rule-out 0.34s ease-in forwards;
+  animation: intro-fade-out 0.2s ease-in forwards;
 }
 
-@keyframes intro-out {
+@keyframes intro-fade-out {
   from {
     opacity: 1;
   }
@@ -848,14 +850,19 @@ body.is-holo #main {
   }
 }
 
-@keyframes intro-rule-out {
+/* 页面不是淡入，是「穿出隧道后视野重新稳定」 */
+body.is-warp #main {
+  animation: warp-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.72s both;
+}
+
+@keyframes warp-in {
   from {
-    opacity: 1;
-    transform: scaleX(1);
+    opacity: 0;
+    transform: scale(1.1);
   }
   to {
-    opacity: 0;
-    transform: scaleX(1);
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -880,11 +887,11 @@ body.is-holo #main {
   pointer-events: none;
 }
 
-/* 退场时这层暗场必须立刻撤掉：天空变暗后它会在画面上露出一条长方形硬边，
- * 像贴了一块胶片。文字都让位给粒子了，也不需要它压着星轨。 */
+/* 文字被甩过来的瞬间，这层压暗场会变成一块随字放大的灰色方块，
+ * 所以一开始就撤掉 —— 反正文字马上就要虚化了 */
 .intro.is-out .intro-inner::before {
   opacity: 0;
-  transition: opacity 0.18s linear;
+  transition: opacity 0.26s linear;
 }
 
 .intro-eyebrow {
@@ -1151,7 +1158,18 @@ body.is-holo #main {
     transform: none !important;
   }
 
-  /* 减少动效：粒子层不跑，只留天空层快速淡出 */
+  /* 减少动效：不推进镜头，欢迎页整层淡出，页面直接到位 */
+  .intro.is-out .intro-inner {
+    animation: intro-fade-out 0.3s linear forwards !important;
+  }
+
+  body.is-warp #main {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* 穿越星空不跑，只留天空层快速淡出 */
   .intro-sky {
     transition: opacity 0.3s linear !important;
   }

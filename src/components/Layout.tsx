@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { contact, profile } from '../data/profile'
-import { Cursor, ScrollProgress } from './Chrome'
+import { Cursor, BackToTop, ScrollProgress } from './Chrome'
 import Starfield from './Starfield'
 import { Arrow, Label } from './ui'
 
@@ -27,6 +27,7 @@ export default function Layout() {
       <Starfield />
       <ScrollProgress />
       <Cursor />
+      <BackToTop />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"

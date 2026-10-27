@@ -18,7 +18,7 @@ const C = {
   muted: '#74818f',
 }
 
-const LABEL: Record<ArtKey, string> = {
+export const ART_LABEL: Record<ArtKey, string> = {
   systemmap: '系统结构拆解示意',
   gas: '战斗状态机示意',
   souls: '魂系战斗推拉循环示意',
@@ -39,7 +39,7 @@ export function ProjectArt({
       viewBox="0 0 1200 760"
       className={className}
       role="img"
-      aria-label={LABEL[art]}
+      aria-label={ART_LABEL[art]}
       preserveAspectRatio={fit === 'meet' ? 'xMidYMid meet' : 'xMidYMid slice'}
     >
       <rect width="1200" height="760" fill={C.deep} />

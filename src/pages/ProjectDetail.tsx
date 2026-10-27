@@ -1,4 +1,6 @@
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import ZoomFrame from '../components/ArtZoom'
 import { Blocks } from '../components/Blocks'
 import { HeroArt } from '../components/ProjectArt'
 import VideoPlayer from '../components/VideoPlayer'
@@ -15,6 +17,50 @@ export default function ProjectDetail() {
     project?.summary,
     project ? `/og/${project.slug}.jpg` : undefined,
   )
+
+  const sections = project?.sections
+  const toc = useMemo(
+    () => [
+      ...(project?.video ? [{ id: 'demo', num: '00', title: '演示视频' }] : []),
+      ...(sections ?? []).map((s, i) => ({
+        id: s.id,
+        num: String(i + 1).padStart(2, '0'),
+        title: s.title,
+      })),
+    ],
+    [project, sections],
+  )
+
+  // 目录当前位置：取「顶边已经越过阅读线」的最后一节
+  const [activeId, setActiveId] = useState('')
+
+  useEffect(() => {
+    const ids = toc.map((t) => t.id)
+    if (!ids.length) return
+    let raf = 0
+
+    const update = () => {
+      raf = 0
+      let cur = ''
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (el && el.getBoundingClientRect().top <= 140) cur = id
+      }
+      setActiveId(cur)
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [toc])
 
   if (!project) return <NotFound />
 
@@ -77,11 +123,13 @@ export default function ProjectDetail() {
 
       <div className="container-page pt-8">
         <div className="hud-frame scan overflow-hidden border border-line bg-paper-deep">
-          <HeroArt art={project.art} />
+          <ZoomFrame art={project.art} label={`${project.title} · 结构示意`}>
+            <HeroArt art={project.art} />
+          </ZoomFrame>
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           <p className="font-mono text-[12px] tracking-wide text-muted">
-            图示为原创结构示意，非项目截图
+            图示为原创结构示意，非项目截图 · 点击可放大
           </p>
           {project.links && (
             <div className="flex flex-wrap gap-2">
@@ -122,32 +170,28 @@ export default function ProjectDetail() {
           <div className="md:sticky md:top-24">
             <Label>Contents</Label>
             <ol className="mt-4 space-y-2">
-              {project.video && (
-                <li>
-                  <a
-                    href="#demo"
-                    className="group flex items-baseline gap-3 text-[12.5px] text-muted transition-colors hover:text-ink"
-                  >
-                    <span className="font-mono text-[11px] text-muted/50 group-hover:text-accent">
-                      00
-                    </span>
-                    演示视频
-                  </a>
-                </li>
-              )}
-              {project.sections.map((s, i) => (
-                <li key={s.id}>
-                  <a
-                    href={`#${s.id}`}
-                    className="group flex items-baseline gap-3 text-[12.5px] text-muted transition-colors hover:text-ink"
-                  >
-                    <span className="font-mono text-[11px] text-muted/50 group-hover:text-accent">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    {s.title}
-                  </a>
-                </li>
-              ))}
+              {toc.map((t) => {
+                const active = activeId === t.id
+                return (
+                  <li key={t.id}>
+                    <a
+                      href={`#${t.id}`}
+                      data-active={active ? '' : undefined}
+                      aria-current={active ? 'true' : undefined}
+                      className="group -ml-3 flex items-baseline gap-3 border-l border-transparent pl-3 text-[12.5px] text-muted transition-colors hover:text-ink data-[active]:border-accent/60 data-[active]:text-ink"
+                    >
+                      <span
+                        className={`font-mono text-[11px] transition-colors ${
+                          active ? 'text-accent' : 'text-muted/50 group-hover:text-accent'
+                        }`}
+                      >
+                        {t.num}
+                      </span>
+                      {t.title}
+                    </a>
+                  </li>
+                )
+              })}
             </ol>
             <div className="mt-8 hidden border-t border-line pt-4 md:block">
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">

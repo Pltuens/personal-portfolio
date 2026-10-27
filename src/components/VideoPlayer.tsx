@@ -5,8 +5,8 @@ import { Arrow } from './ui'
  * 站内视频窗口
  * ------------------------------------------------------------------
  * 传了 src 就用原生 <video> 直接播（mp4 放 public/videos/ 下即可）；
- * 没传、或文件还没放进来的，就渲染成同一个外框的占位态，
- * 保证版式不塌、页面上不会出现裂图。
+ * 没传、或文件还没放进来的，就收成一条窄面板（说明 + 外部链接），
+ * 而不是撑一个 16:9 的空框 —— 空框只会告诉来访者「这里什么都没有」。
  */
 
 type Props = {
@@ -30,53 +30,58 @@ export default function VideoPlayer({
   const [broken, setBroken] = useState(false)
   const playable = Boolean(src) && !broken
 
+  if (!playable) {
+    return (
+      <div className="hud-frame flex flex-col gap-4 border border-line bg-paper-deep px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-5">
+        <div className="flex items-start gap-3.5">
+          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-accent/25">
+            <svg viewBox="0 0 24 24" className="ml-0.5 h-3.5 w-3.5 fill-accent/70" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent/75">
+              Demo Reel / <span className="text-muted">Pending</span>
+            </p>
+            <p className="mt-1.5 max-w-[54ch] text-[12.5px] leading-[1.75] text-muted">
+              {note ?? `${title}成片还在整理，需要看的话可以直接找我要原始素材。`}
+            </p>
+          </div>
+        </div>
+        {externalHref && (
+          <a
+            href={externalHref}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group inline-flex shrink-0 items-center gap-2 self-start border border-accent/40 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-accent transition-colors hover:bg-accent hover:text-[#04121a] sm:self-auto"
+          >
+            {externalLabel}
+            <Arrow className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </a>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="hud-frame relative overflow-hidden border border-line bg-paper-deep">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 py-3 font-mono text-[11px] uppercase tracking-[0.16em]">
         <span className="text-accent/75">Demo Reel / {title}</span>
-        <span className="text-muted">{playable ? 'MP4' : 'Pending'}</span>
+        <span className="text-muted">MP4</span>
       </div>
 
       <div className="aspect-[4/3] w-full sm:aspect-video">
-        {playable ? (
-          <video
-            className="h-full w-full bg-black object-contain"
-            src={src}
-            poster={poster}
-            controls
-            playsInline
-            preload="metadata"
-            onError={() => setBroken(true)}
-          >
-            你的浏览器不支持视频播放。
-          </video>
-        ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
-            <span className="relative flex h-14 w-14 items-center justify-center rounded-full border border-accent/30">
-              <span className="absolute inset-0 animate-ping rounded-full border border-accent/15" />
-              <svg viewBox="0 0 24 24" className="ml-1 h-5 w-5 fill-accent/80" aria-hidden="true">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </span>
-            <div>
-              <p className="font-display text-[17px] text-ink">{title}正在整理</p>
-              <p className="mt-2 max-w-[42ch] text-[12.5px] leading-[1.8] text-muted">
-                {note ?? '成片还没放上来，需要看的话可以直接找我要原始素材。'}
-              </p>
-            </div>
-            {externalHref && (
-              <a
-                href={externalHref}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="group inline-flex items-center gap-2 border border-accent/40 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-accent transition-colors hover:bg-accent hover:text-[#04121a]"
-              >
-                {externalLabel}
-                <Arrow className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-              </a>
-            )}
-          </div>
-        )}
+        <video
+          className="h-full w-full bg-black object-contain"
+          src={src}
+          poster={poster}
+          controls
+          playsInline
+          preload="metadata"
+          onError={() => setBroken(true)}
+        >
+          你的浏览器不支持视频播放。
+        </video>
       </div>
     </div>
   )

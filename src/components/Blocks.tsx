@@ -1,4 +1,5 @@
 import type { Block } from '../data/projects'
+import ZoomFrame from './ArtZoom'
 import { ProjectArt } from './ProjectArt'
 
 export function Blocks({ blocks }: { blocks: Block[] }) {
@@ -123,11 +124,13 @@ function BlockView({ block }: { block: Block }) {
       return (
         <figure className="mt-2">
           <div className="border border-line bg-paper-deep">
-            <ProjectArt
-              art={block.art}
-              fit="slice"
-              className="h-[clamp(220px,32vw,440px)] w-full"
-            />
+            <ZoomFrame art={block.art} label={block.caption}>
+              <ProjectArt
+                art={block.art}
+                fit="slice"
+                className="h-[clamp(220px,32vw,440px)] w-full"
+              />
+            </ZoomFrame>
           </div>
           <figcaption className="mt-3 font-mono text-[11px] tracking-wide text-muted">
             {block.caption}

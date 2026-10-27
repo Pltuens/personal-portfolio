@@ -660,6 +660,13 @@ body.intro-open * {
   cursor: pointer;
 }
 
+/* 锁滚动用 class 而不是 inline style：
+ * Layout 的 effect 会把 body.style.overflow 清成 ''，inline 会被它覆盖掉；
+ * 设成 '' 只是移除内联属性，这里这条件样式反而能生效。 */
+body.intro-open {
+  overflow: hidden;
+}
+
 body.intro-open .crosshair {
   display: none;
 }
@@ -689,6 +696,9 @@ body.intro-open .crosshair {
   background:
     radial-gradient(150% 105% at 50% -6%, #0c303b 0%, #08222c 34%, #05171f 64%, #040f16 100%),
     #040f16;
+  /* 退场时整块慢慢融进站点背景：站点本身也是星野，两片星空叠在一起换场，
+   * 比直接淡到黑更自然。延迟到文字散完之后才动，避免两层文字互相叠出重影。 */
+  transition: opacity 0.72s cubic-bezier(0.33, 0, 0.25, 1) 0.8s;
 }
 
 /* 底部极光：贴地升起，缓慢横向漂移 */
@@ -747,93 +757,87 @@ body.intro-open .crosshair {
   }
 }
 
-/* 跃迁白光：从中心炸开，最终铺满整个视口
- * 必须做到完全不透明 —— 它要在入场页卸载的那一帧接住画面，
- * 哪怕露出一点底层，青绿底到深蓝底的跳变就会被看见。
- */
-.intro-flash {
-  position: absolute;
-  inset: 0;
-  z-index: 20;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale(1.08);
-  background:
-    radial-gradient(circle at 50% 46%, #ffffff 0%, rgba(248, 253, 255, 1) 40%, rgba(226, 245, 252, 1) 74%, rgba(206, 236, 250, 1) 100%);
-  transition:
-    opacity 0.34s cubic-bezier(0.75, 0, 1, 1),
-    transform 0.42s ease-out;
-}
-
-.intro-flash.is-on {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* 从入场页交接到主界面用的白光层，由 App 控制挂载与褪去 */
-.intro-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 95;
-  pointer-events: none;
-  opacity: 1;
-  background:
-    radial-gradient(circle at 50% 44%, #ffffff 0%, rgba(248, 253, 255, 1) 40%, rgba(228, 246, 252, 1) 76%, rgba(208, 237, 250, 1) 100%);
-  transition: opacity 0.48s linear;
-}
-
-.intro-curtain.is-fading {
-  opacity: 0;
-}
-
-/* 退场时不整体淡出：整体淡出会提前露出底层，
- * 改成内容被光吞掉（放大 + 虚化 + 淡出），背景留给白光覆盖。
+/* 退场：两个界面同时在场的叠化
+ * ------------------------------------------------------------------
+ * 不是"盖住再揭开"，而是：仪表先退 → 标题逐字飘散 → 问候语最后走 →
+ * 极光先熄 → 整块星空慢慢融进站点自己的星空。
+ * 每一步都是错开的，交叠处才有"告别"的感觉。
  */
 .intro.is-out {
+  opacity: 0;
   pointer-events: none;
 }
 
-.intro.is-out .intro-inner {
+/* 极光最先熄：它是整块画面里唯一和站点配色打架的东西 */
+.intro.is-out .intro-aurora {
   opacity: 0;
-  transform: scale(1.07);
-  filter: blur(12px);
-  transition:
-    opacity 0.36s ease-in,
-    transform 0.5s cubic-bezier(0.4, 0, 1, 1),
-    filter 0.5s ease-in;
+  transition: opacity 0.7s ease-out 0.04s;
+}
+
+/* 标题逐字飘散。这里必须用 animation —— 入场用的是 animation + fill: forwards，
+ * 动画值优先级高于 transition，写 transition 是盖不住的。
+ */
+.intro.is-out .intro-title span {
+  animation: intro-char-out 0.48s cubic-bezier(0.4, 0.1, 0.6, 1) forwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+@keyframes intro-char-out {
+  from {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-26px);
+    filter: blur(6px);
+  }
+}
+
+/* 问候语是整段里唯一有温度的一句，留到最后走 */
+.intro.is-out .intro-sub-wrap {
+  animation: intro-out 0.6s ease-in 0.3s forwards;
+}
+
+/* 仪表盘退得快一些，把注意力让给标题 */
+.intro.is-out .intro-eyebrow,
+.intro.is-out .intro-bar,
+.intro.is-out .intro-meta,
+.intro.is-out .intro-continue,
+.intro.is-out .intro-corner {
+  animation: intro-out 0.34s ease-in forwards;
+}
+
+/* 中缝横线单独处理：它的入场动画带 scaleX(1)，直接覆盖会缩回 0 */
+.intro.is-out .intro-rule {
+  animation: intro-rule-out 0.34s ease-in forwards;
+}
+
+@keyframes intro-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-rule-out {
+  from {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  to {
+    opacity: 0;
+    transform: scaleX(1);
+  }
 }
 
 .intro-inner {
   width: min(760px, 100%);
   text-align: center;
   z-index: 5;
-  transition:
-    opacity 0.3s var(--ease-out-soft),
-    transform 0.3s var(--ease-out-soft);
-}
-
-/* 白光褪去的同时，首屏内容从略近的位置回落到原位。
- * 必须挂在 <main> 上，不能挂 .page-enter ——
- * 那个元素自带 page-in 动画，撤销覆盖会让 page-in 重新播放，内容会闪一下再重进。
- */
-body.is-revealing #main {
-  animation: shell-reveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* 白光期间不显示准星光标，否则青色准星会浮在一片白上 */
-body.is-revealing .crosshair {
-  display: none;
-}
-
-@keyframes shell-reveal {
-  from {
-    opacity: 0.45;
-    transform: scale(1.018);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 /* 文字后面压一层暗场，星轨不会穿过正文 */
@@ -1100,7 +1104,8 @@ body.is-revealing .crosshair {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intro,
+  /* 注意不要把 .intro 放进这一组：它靠 is-out 的 opacity 退场，
+   * 被 !important 拉回 1 就再也退不出去了。 */
   .intro-title span,
   .intro-eyebrow,
   .intro-sub-wrap,
@@ -1114,28 +1119,19 @@ body.is-revealing .crosshair {
     transform: none !important;
   }
 
+  /* 减少动效：不逐字散，整块直接快速淡出 */
+  .intro {
+    transition: opacity 0.3s linear !important;
+  }
+
+  .intro.is-out .intro-aurora {
+    transition: opacity 0.3s linear !important;
+  }
+
   /* 这两行靠 data 属性切换显隐，禁用过渡即可瞬时换字，不要强拉 opacity */
   .intro-role,
   .intro-greet {
     transition: none;
-  }
-
-  /* 减少动效时不要缩放和虚化，只留一次短促的白光换场 */
-  .intro.is-out .intro-inner {
-    transform: none !important;
-    filter: none !important;
-    transition: opacity 0.2s linear !important;
-  }
-
-  .intro-flash,
-  .intro-curtain {
-    transform: none !important;
-    transition: opacity 0.22s linear !important;
-  }
-
-  /* 不要让首屏内容在减少动效模式下缩放 */
-  body.is-revealing #main {
-    animation: none !important;
   }
 }
 

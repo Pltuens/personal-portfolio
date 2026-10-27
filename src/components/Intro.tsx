@@ -15,8 +15,14 @@ import IntroBackdrop from './IntroBackdrop'
 
 export const INTRO_KEY = 'pluents:intro-shown'
 const PROGRESS = 1400
-/** 白光铺满整个画面所需时间；到点后才卸载，避免露出还没被盖住的底层 */
-const EXIT = 420
+/**
+ * 退场总时长。要等三件事都完成才卸载：
+ * 标题逐字散完（0.49s 延迟 + 0.48s）、问候语散完（0.3 + 0.6）、
+ * 整块背景淡完（0.8 + 0.72 = 1.52s）。取最长的那条再加一点余量。
+ */
+const EXIT = 1540
+/** 减少动效时只有一次 0.3s 的整体淡出，不必等满整套逐字退场 */
+const EXIT_REDUCED = 420
 
 export default function Intro({ onDone }: { onDone: () => void }) {
   const [pct, setPct] = useState(0)
@@ -33,17 +39,17 @@ export default function Intro({ onDone }: { onDone: () => void }) {
     canEnterRef.current = false
     setReady(true)
     setLeaving(true)
-    window.setTimeout(() => {
-      document.body.style.overflow = ''
-      onDoneRef.current()
-    }, EXIT)
+    const wait = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? EXIT_REDUCED
+      : EXIT
+    window.setTimeout(() => onDoneRef.current(), wait)
   }, [])
 
   const enterRef = useRef(enter)
   enterRef.current = enter
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
+    // 锁滚动交给 body.intro-open 这个 class，不要写 inline style
     document.body.classList.add('intro-open')
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -79,7 +85,6 @@ export default function Intro({ onDone }: { onDone: () => void }) {
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
       document.body.classList.remove('intro-open')
     }
   }, [])
@@ -95,7 +100,6 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       <div className="intro-aurora" aria-hidden="true" />
       <div className="intro-aurora intro-aurora--2" aria-hidden="true" />
       <IntroBackdrop boost={leaving} />
-      <div className={`intro-flash ${leaving ? 'is-on' : ''}`} aria-hidden="true" />
 
       <span className="intro-corner intro-corner--tl" aria-hidden="true" />
       <span className="intro-corner intro-corner--tr" aria-hidden="true" />

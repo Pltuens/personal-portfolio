@@ -61,7 +61,7 @@ export default function ZoomFrame({
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-label={`放大查看：${title}`}
-        className="group relative block w-full cursor-zoom-in overflow-hidden text-left"
+        className="group relative block w-full overflow-hidden text-left"
       >
         {children}
         <span className="pointer-events-none absolute right-2.5 bottom-2.5 flex items-center gap-1.5 border border-line bg-paper/90 px-2 py-1 font-mono text-[11px] tracking-[0.1em] text-muted transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">

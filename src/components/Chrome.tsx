@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 /**
  * 外层 HUD 装饰：
@@ -34,11 +35,20 @@ export function Cursor() {
       dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`
 
       const t = e.target as Element | null
-      const next = Boolean(t?.closest?.('a, button, [role="button"]'))
+      const next = Boolean(t?.closest?.('a, button, [role="button"], [data-cursor="hot"]'))
       if (next !== hovering) {
         hovering = next
         ring.dataset.hot = next ? '1' : '0'
       }
+    }
+
+    // 系统光标全站关掉了，可拖拽区域的「按住」反馈要由准星补上
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Element | null
+      if (t?.closest?.('[data-drag]')) ring.dataset.grab = '1'
+    }
+    const onUp = () => {
+      if (ring.dataset.grab) delete ring.dataset.grab
     }
 
     const loop = () => {
@@ -49,25 +59,34 @@ export function Cursor() {
     }
 
     window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onDown)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
     raf = requestAnimationFrame(loop)
 
     return () => {
       window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
       cancelAnimationFrame(raf)
       document.body.classList.remove('has-crosshair')
     }
   }, [])
 
-  return (
+  // 挂到 body 上：Layout 根节点是 `relative z-10`，自成层叠上下文，
+  // 准星留在里面会永远压在欢迎页（z-80）下面 —— 而系统光标已经全站关掉，
+  // 那样欢迎页就变成「屏幕上没有光标」。
+  return createPortal(
     <>
       <div
         ref={ringRef}
         data-hot="0"
         aria-hidden="true"
-        className="crosshair group/ring"
+        className="crosshair"
         style={{ transform: 'translate3d(-200px,-200px,0)' }}
       >
-        <div className="relative h-[30px] w-[30px] -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-data-[hot='1]/ring:scale-[1.6]">
+        <div className="crosshair-ring relative h-[30px] w-[30px] -translate-x-1/2 -translate-y-1/2">
           {[
             'left-0 top-0 border-l border-t',
             'right-0 top-0 border-r border-t',
@@ -76,7 +95,7 @@ export function Cursor() {
           ].map((pos) => (
             <span
               key={pos}
-              className={`absolute h-[7px] w-[7px] border-accent/70 transition-colors duration-300 ${pos} group-data-[hot='1]/ring:border-accent`}
+              className={`crosshair-corner absolute h-[7px] w-[7px] ${pos}`}
             />
           ))}
         </div>
@@ -89,7 +108,8 @@ export function Cursor() {
       >
         <span className="block h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" />
       </div>
-    </>
+    </>,
+    document.body,
   )
 }
 

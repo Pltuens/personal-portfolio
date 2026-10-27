@@ -647,17 +647,33 @@
   .crosshair {
     display: block;
   }
-  body.has-crosshair,
-  body.has-crosshair a,
-  body.has-crosshair button {
-    cursor: none;
-  }
-}
 
-/* 入场页期间换回普通指针：准星会让人不确定"这里能不能点" */
-body.intro-open,
-body.intro-open * {
-  cursor: pointer;
+  /* 全站不出现系统光标。
+   * 必须用 `*` + !important：canvas 用 JS 写内联 style.cursor（知识球拖拽时是 grab），
+   * Tailwind 的 cursor-* 工具类也会盖掉 body 上的 none，只写 body 会漏出箭头。
+   * 交互反馈改由准星自己承担：可点/可拖时张开，按住时收拢。 */
+  body.has-crosshair,
+  body.has-crosshair * {
+    cursor: none !important;
+  }
+
+  /* 准星状态：悬停可交互元素时张开，按住可拖拽区域（知识球）时收紧 */
+  .crosshair-ring {
+    transition: scale 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .crosshair-corner {
+    border-color: rgba(53, 226, 255, 0.7);
+    transition: border-color 0.3s ease;
+  }
+  .crosshair[data-hot='1'] .crosshair-ring {
+    scale: 1.6;
+  }
+  .crosshair[data-hot='1'] .crosshair-corner {
+    border-color: #35e2ff;
+  }
+  .crosshair[data-grab='1'] .crosshair-ring {
+    scale: 0.72;
+  }
 }
 
 /* 锁滚动用 class 而不是 inline style：
@@ -665,10 +681,6 @@ body.intro-open * {
  * 设成 '' 只是移除内联属性，这里这条件样式反而能生效。 */
 body.intro-open {
   overflow: hidden;
-}
-
-body.intro-open .crosshair {
-  display: none;
 }
 
 /* 滚动进度条 */

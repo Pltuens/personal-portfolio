@@ -357,7 +357,6 @@ export default function KnowledgeSphere() {
       velX = 0
       velY = 0
       canvas.setPointerCapture(e.pointerId)
-      canvas.style.cursor = 'grabbing'
     }
 
     const onMove = (e: PointerEvent) => {
@@ -380,14 +379,12 @@ export default function KnowledgeSphere() {
       if (hit !== hoverRef.current) {
         hoverRef.current = hit
         setHovered(hit)
-        canvas.style.cursor = hit >= 0 ? 'pointer' : 'grab'
       }
     }
 
     const onUp = (e: PointerEvent) => {
       drag.active = false
       if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId)
-      canvas.style.cursor = 'grab'
     }
 
     const onLeave = () => {
@@ -398,7 +395,6 @@ export default function KnowledgeSphere() {
     }
 
     resize()
-    canvas.style.cursor = 'grab'
     canvas.addEventListener('pointerdown', onDown)
     canvas.addEventListener('pointermove', onMove)
     canvas.addEventListener('pointerup', onUp)
@@ -438,6 +434,8 @@ export default function KnowledgeSphere() {
           <canvas
             ref={canvasRef}
             className="block touch-pan-y"
+            data-cursor="hot"
+            data-drag=""
             role="img"
             aria-label={`知识链路球体：${NODE_COUNT} 个节点，${edges.length} 条连线，可拖动旋转`}
           />

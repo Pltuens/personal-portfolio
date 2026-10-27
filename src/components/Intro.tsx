@@ -95,6 +95,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       role="dialog"
       aria-modal="true"
       aria-label="欢迎页，按任意键或点击进入作品集"
+      data-cursor="hot"
       onClick={enter}
     >
       <div className="intro-sky" aria-hidden="true" />

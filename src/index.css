@@ -650,29 +650,26 @@
 
   /* 全站不出现系统光标。
    * 必须用 `*` + !important：canvas 用 JS 写内联 style.cursor（知识球拖拽时是 grab），
-   * Tailwind 的 cursor-* 工具类也会盖掉 body 上的 none，只写 body 会漏出箭头。
-   * 交互反馈改由准星自己承担：可点/可拖时张开，按住时收拢。 */
+   * Tailwind 的 cursor-* 工具类也会盖掉 body 上的 none，只写 body 会漏出箭头。 */
   body.has-crosshair,
   body.has-crosshair * {
     cursor: none !important;
   }
 
-  /* 准星状态：悬停可交互元素时张开，按住可拖拽区域（知识球）时收紧 */
-  .crosshair-ring {
-    transition: scale 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  }
+  /* 准星尺寸全站恒定：光标忽大忽小会分神，还会让「这里和别处不一样」变成噪音。
+   * 状态只用颜色/线重区分：可交互时角标点亮，按住可拖拽区域时换成更亮的高光。 */
   .crosshair-corner {
-    border-color: rgba(53, 226, 255, 0.7);
-    transition: border-color 0.3s ease;
-  }
-  .crosshair[data-hot='1'] .crosshair-ring {
-    scale: 1.6;
+    border-color: rgba(53, 226, 255, 0.65);
+    transition:
+      border-color 0.3s ease,
+      border-width 0.18s ease;
   }
   .crosshair[data-hot='1'] .crosshair-corner {
     border-color: #35e2ff;
   }
-  .crosshair[data-grab='1'] .crosshair-ring {
-    scale: 0.72;
+  .crosshair[data-grab='1'] .crosshair-corner {
+    border-color: #9df3ff;
+    border-width: 2px;
   }
 }
 

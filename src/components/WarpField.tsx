@@ -35,21 +35,21 @@ const D_NEAR = 0.03
 const D_FAR = 1
 
 /** 全程时长：要和 Intro 的 EXIT、以及 CSS 里 warp-* 的延迟对齐 */
-export const WARP_MS = 1750
+export const WARP_MS = 2150
 const FADE_IN = 240
 const RUSH_START = 200
 const RUSH_MS = 780
 const BRAKE_AT = 1150
-const BRAKE_MS = 420
-const FADE_OUT_AT = 1430
-const FADE_OUT_MS = 320
+const BRAKE_MS = 520
+const FADE_OUT_AT = 1620
+const FADE_OUT_MS = 480
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
 
 /** 当前帧的推进速度（d/秒） */
 function speedAt(t: number) {
   const rush = clamp01((t - RUSH_START) / RUSH_MS)
-  const brake = t < BRAKE_AT ? 1 : Math.max(0.1, 1 - (t - BRAKE_AT) / BRAKE_MS)
+  const brake = t < BRAKE_AT ? 1 : Math.max(0, 1 - (t - BRAKE_AT) / BRAKE_MS)
   return 0.6 + 6.2 * rush * rush * brake
 }
 

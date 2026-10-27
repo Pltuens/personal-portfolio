@@ -808,10 +808,11 @@ body.intro-open .crosshair {
   }
 }
 
-/* 天空一直压到穿越中段才开始褪，穿出的那一刻才露出页面 */
+/* 天空一直压到穿越中段才开始褪，和页面浮出用同一条曲线，收尾时间对齐：
+ * 0.72s 起 → 1.67s 褪完，页面 0.66s 起 → 1.96s 到位，读起来是一次连续的开阔。 */
 .intro.is-out .intro-sky {
   opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.5, 0, 0.75, 0.6) 0.78s;
+  transition: opacity 0.95s cubic-bezier(0.45, 0, 0.35, 1) 0.72s;
 }
 
 /* 长曝光星轨退得干脆：它和穿越的星是两种运动，同屏会打架 */
@@ -850,15 +851,18 @@ body.intro-open .crosshair {
   }
 }
 
-/* 页面不是淡入，是「穿出隧道后视野重新稳定」 */
+/* 页面不是淡入，是「穿出隧道后视野重新稳定」。
+ * 缓动不能用 (0.16, 1, 0.3, 1)：那条曲线在 20% 的时间里就冲到 60% 以上，
+ * 0.85s 的时长实际只在头 0.3s 里「闪」一下就完事了，看着太快。
+ * 这里换成对称的 (0.45, 0, 0.35, 1) + 1.3s，配合 1.14 → 1 的推镜，才叫缓缓浮现。 */
 body.is-warp #main {
-  animation: warp-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.72s both;
+  animation: warp-in 1.3s cubic-bezier(0.45, 0, 0.35, 1) 0.66s both;
 }
 
 @keyframes warp-in {
   from {
     opacity: 0;
-    transform: scale(1.1);
+    transform: scale(1.14);
   }
   to {
     opacity: 1;

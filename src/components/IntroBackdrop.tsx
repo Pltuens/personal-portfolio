@@ -263,5 +263,5 @@ export default function IntroBackdrop({ boost = false }: { boost?: boolean }) {
     }
   }, [])
 
-  return <canvas ref={ref} aria-hidden="true" className="absolute inset-0 h-full w-full" />
+  return <canvas ref={ref} aria-hidden="true" className="intro-backdrop absolute inset-0 h-full w-full" />
 }

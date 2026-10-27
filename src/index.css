@@ -693,12 +693,25 @@ body.intro-open .crosshair {
   display: grid;
   place-items: center;
   padding: 1.5rem;
+}
+
+/* 天空单独一层：退场时只淡它。
+ * 若直接淡 .intro，粒子层会作为子元素一起被淡掉，全息重组就看不见了。 */
+.intro-sky {
+  position: absolute;
+  inset: 0;
   background:
     radial-gradient(150% 105% at 50% -6%, #0c303b 0%, #08222c 34%, #05171f 64%, #040f16 100%),
     #040f16;
-  /* 退场时整块慢慢融进站点背景：站点本身也是星野，两片星空叠在一起换场，
-   * 比直接淡到黑更自然。延迟到文字散完之后才动，避免两层文字互相叠出重影。 */
-  transition: opacity 0.72s cubic-bezier(0.33, 0, 0.25, 1) 0.8s;
+  transition: opacity 0.72s cubic-bezier(0.33, 0, 0.25, 1) 0.3s;
+}
+
+/* 全息粒子层：坐在天空与极光之上、正文之下 */
+.holo-field {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* 底部极光：贴地升起，缓慢横向漂移 */
@@ -764,8 +777,41 @@ body.intro-open .crosshair {
  * 每一步都是错开的，交叠处才有"告别"的感觉。
  */
 .intro.is-out {
-  opacity: 0;
   pointer-events: none;
+}
+
+.intro.is-out .intro-sky {
+  opacity: 0;
+}
+
+.intro.is-out .intro-backdrop {
+  opacity: 0;
+  transition: opacity 0.7s ease-out 0.22s;
+}
+
+/* 标题立刻让位给粒子。粒子第一帧就画在字形原位上，接缝看不出来。 */
+.intro.is-out .intro-title {
+  opacity: 0;
+  transition: none;
+}
+
+/* 网站不是淡入，是从粒子里"实体化"：先保持一层很淡的底噪，
+ * 等粒子快落位时才收敛到正常。
+ * 0.5s 起跑 = HoloField 的 SITE_START(520ms)，0.74s 走完 = 1240ms，
+ * 此时粒子已经落了一大半，最后一批正好压在逐渐变实的页面上。 */
+body.is-holo #main {
+  animation: holo-materialize 0.74s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+@keyframes holo-materialize {
+  from {
+    opacity: 0.3;
+    transform: scale(1.018);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* 极光最先熄：它是整块画面里唯一和站点配色打架的东西 */
@@ -774,30 +820,9 @@ body.intro-open .crosshair {
   transition: opacity 0.7s ease-out 0.04s;
 }
 
-/* 标题逐字飘散。这里必须用 animation —— 入场用的是 animation + fill: forwards，
- * 动画值优先级高于 transition，写 transition 是盖不住的。
- */
-.intro.is-out .intro-title span {
-  animation: intro-char-out 0.48s cubic-bezier(0.4, 0.1, 0.6, 1) forwards;
-  animation-delay: calc(var(--i) * 70ms);
-}
-
-@keyframes intro-char-out {
-  from {
-    opacity: 1;
-    transform: none;
-    filter: blur(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-26px);
-    filter: blur(6px);
-  }
-}
-
 /* 问候语是整段里唯一有温度的一句，留到最后走 */
 .intro.is-out .intro-sub-wrap {
-  animation: intro-out 0.6s ease-in 0.3s forwards;
+  animation: intro-out 0.42s ease-in 0.1s forwards;
 }
 
 /* 仪表盘退得快一些，把注意力让给标题 */
@@ -806,7 +831,7 @@ body.intro-open .crosshair {
 .intro.is-out .intro-meta,
 .intro.is-out .intro-continue,
 .intro.is-out .intro-corner {
-  animation: intro-out 0.34s ease-in forwards;
+  animation: intro-out 0.22s ease-in forwards;
 }
 
 /* 中缝横线单独处理：它的入场动画带 scaleX(1)，直接覆盖会缩回 0 */
@@ -853,6 +878,13 @@ body.intro-open .crosshair {
     transparent 78%
   );
   pointer-events: none;
+}
+
+/* 退场时这层暗场必须立刻撤掉：天空变暗后它会在画面上露出一条长方形硬边，
+ * 像贴了一块胶片。文字都让位给粒子了，也不需要它压着星轨。 */
+.intro.is-out .intro-inner::before {
+  opacity: 0;
+  transition: opacity 0.18s linear;
 }
 
 .intro-eyebrow {
@@ -1119,8 +1151,8 @@ body.intro-open .crosshair {
     transform: none !important;
   }
 
-  /* 减少动效：不逐字散，整块直接快速淡出 */
-  .intro {
+  /* 减少动效：粒子层不跑，只留天空层快速淡出 */
+  .intro-sky {
     transition: opacity 0.3s linear !important;
   }
 

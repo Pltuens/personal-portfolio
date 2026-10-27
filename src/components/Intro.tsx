@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import HoloField from './HoloField'
 import IntroBackdrop from './IntroBackdrop'
 
 /**
@@ -16,11 +17,10 @@ import IntroBackdrop from './IntroBackdrop'
 export const INTRO_KEY = 'pluents:intro-shown'
 const PROGRESS = 1400
 /**
- * 退场总时长。要等三件事都完成才卸载：
- * 标题逐字散完（0.49s 延迟 + 0.48s）、问候语散完（0.3 + 0.6）、
- * 整块背景淡完（0.8 + 0.72 = 1.52s）。取最长的那条再加一点余量。
+ * 退场总时长 = 粒子动画的总时长（见 HoloField 的 TOTAL）。
+ * 粒子层是入场的最后一段，它跑完才卸载整张欢迎页。
  */
-const EXIT = 1540
+const EXIT = 2050
 /** 减少动效时只有一次 0.3s 的整体淡出，不必等满整套逐字退场 */
 const EXIT_REDUCED = 420
 
@@ -30,6 +30,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const [ready, setReady] = useState(false)
   const [leaving, setLeaving] = useState(false)
 
+  const titleRef = useRef<HTMLHeadingElement | null>(null)
   const canEnterRef = useRef(true)
   const onDoneRef = useRef(onDone)
   onDoneRef.current = onDone
@@ -97,9 +98,11 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       aria-label="欢迎页，按任意键或点击进入作品集"
       onClick={enter}
     >
+      <div className="intro-sky" aria-hidden="true" />
       <div className="intro-aurora" aria-hidden="true" />
       <div className="intro-aurora intro-aurora--2" aria-hidden="true" />
       <IntroBackdrop boost={leaving} />
+      <HoloField run={leaving} sourceRef={titleRef} />
 
       <span className="intro-corner intro-corner--tl" aria-hidden="true" />
       <span className="intro-corner intro-corner--tr" aria-hidden="true" />
@@ -113,7 +116,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
         <span className="intro-rule" aria-hidden="true" />
 
-        <h1 className="intro-title" aria-label="Pluents">
+        <h1 ref={titleRef} className="intro-title" aria-label="Pluents">
           {'PLUENTS'.split('').map((c, i) => (
             <span key={i} style={{ ['--i' as string]: i }}>
               {c}
